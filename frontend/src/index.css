@@ -1,0 +1,257 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@theme {
+  /* Primary variables */
+  --color-primary-50: #ffffff;
+  --color-primary-100: #ffffff;
+  --color-primary-200: #ffffff;
+  --color-primary-300: #ffffff;
+  --color-primary-400: #ffffff;
+  --color-primary-500: #000000;
+  --color-primary-600: #000000;
+  --color-primary-700: #000000;
+  --color-primary-800: #000000;
+  --color-primary-900: #000000;
+  --color-primary-950: #000000;
+
+  /* Accent variables */
+  --color-accent-50: #ffffff;
+  --color-accent-100: #ffffff;
+  --color-accent-200: #ffffff;
+  --color-accent-300: #ffffff;
+  --color-accent-400: #ffffff;
+  --color-accent-500: #000000;
+  --color-accent-600: #000000;
+  --color-accent-700: #000000;
+  --color-accent-750: #ffffff;
+  --color-accent-800: #000000;
+  --color-accent-900: #000000;
+
+  /* Overriding Tailwind default color schemes to ensure total black and white compilation */
+  --color-slate-50: #ffffff;
+  --color-slate-100: #ffffff;
+  --color-slate-200: #ffffff;
+  --color-slate-300: #ffffff;
+  --color-slate-400: #ffffff;
+  --color-slate-500: #000000;
+  --color-slate-600: #000000;
+  --color-slate-700: #000000;
+  --color-slate-800: #000000;
+  --color-slate-900: #000000;
+  --color-slate-950: #000000;
+
+  --color-gray-50: #ffffff;
+  --color-gray-100: #ffffff;
+  --color-gray-200: #ffffff;
+  --color-gray-300: #ffffff;
+  --color-gray-400: #ffffff;
+  --color-gray-500: #000000;
+  --color-gray-600: #000000;
+  --color-gray-700: #000000;
+  --color-gray-800: #000000;
+  --color-gray-900: #000000;
+  --color-gray-950: #000000;
+
+  --color-zinc-50: #ffffff;
+  --color-zinc-100: #ffffff;
+  --color-zinc-200: #ffffff;
+  --color-zinc-300: #ffffff;
+  --color-zinc-400: #ffffff;
+  --color-zinc-500: #000000;
+  --color-zinc-600: #000000;
+  --color-zinc-700: #000000;
+  --color-zinc-800: #000000;
+  --color-zinc-900: #000000;
+  --color-zinc-950: #000000;
+
+  --color-neutral-50: #ffffff;
+  --color-neutral-100: #ffffff;
+  --color-neutral-200: #ffffff;
+  --color-neutral-300: #ffffff;
+  --color-neutral-400: #ffffff;
+  --color-neutral-500: #000000;
+  --color-neutral-600: #000000;
+  --color-neutral-700: #000000;
+  --color-neutral-800: #000000;
+  --color-neutral-900: #000000;
+  --color-neutral-950: #000000;
+
+  --color-stone-50: #ffffff;
+  --color-stone-100: #ffffff;
+  --color-stone-200: #ffffff;
+  --color-stone-300: #ffffff;
+  --color-stone-400: #ffffff;
+  --color-stone-500: #000000;
+  --color-stone-600: #000000;
+  --color-stone-700: #000000;
+  --color-stone-800: #000000;
+  --color-stone-900: #000000;
+  --color-stone-950: #000000;
+
+  --color-red-50: #ffffff;
+  --color-red-100: #ffffff;
+  --color-red-200: #ffffff;
+  --color-red-300: #ffffff;
+  --color-red-400: #ffffff;
+  --color-red-500: #000000;
+  --color-red-600: #000000;
+  --color-red-700: #000000;
+  --color-red-800: #000000;
+  --color-red-900: #000000;
+  --color-red-950: #000000;
+
+  --color-emerald-50: #ffffff;
+  --color-emerald-100: #ffffff;
+  --color-emerald-200: #ffffff;
+  --color-emerald-300: #ffffff;
+  --color-emerald-400: #ffffff;
+  --color-emerald-500: #000000;
+  --color-emerald-600: #000000;
+  --color-emerald-700: #000000;
+  --color-emerald-800: #000000;
+  --color-emerald-900: #000000;
+  --color-emerald-950: #000000;
+
+  --color-amber-50: #ffffff;
+  --color-amber-100: #ffffff;
+  --color-amber-200: #ffffff;
+  --color-amber-300: #ffffff;
+  --color-amber-400: #ffffff;
+  --color-amber-500: #000000;
+  --color-amber-600: #000000;
+  --color-amber-700: #000000;
+  --color-amber-800: #000000;
+  --color-amber-900: #000000;
+  --color-amber-950: #000000;
+
+  --color-blue-50: #ffffff;
+  --color-blue-100: #ffffff;
+  --color-blue-200: #ffffff;
+  --color-blue-300: #ffffff;
+  --color-blue-400: #ffffff;
+  --color-blue-500: #000000;
+  --color-blue-600: #000000;
+  --color-blue-700: #000000;
+  --color-blue-800: #000000;
+  --color-blue-900: #000000;
+  --color-blue-950: #000000;
+
+  --color-purple-50: #ffffff;
+  --color-purple-100: #ffffff;
+  --color-purple-200: #ffffff;
+  --color-purple-300: #ffffff;
+  --color-purple-400: #ffffff;
+  --color-purple-500: #000000;
+  --color-purple-600: #000000;
+  --color-purple-700: #000000;
+  --color-purple-800: #000000;
+  --color-purple-900: #000000;
+  --color-purple-950: #000000;
+
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  --animate-ticker: ticker 25s linear infinite;
+  --animate-logo-tilt: logo-tilt 0.8s ease-in-out;
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
+
+  @keyframes logo-tilt {
+    0%, 100% { transform: rotate(0deg); }
+    15% { transform: rotate(-15deg); }
+    30% { transform: rotate(12deg); }
+    45% { transform: rotate(-10deg); }
+    60% { transform: rotate(8deg); }
+    75% { transform: rotate(-4deg); }
+    90% { transform: rotate(2deg); }
+  }
+}
+
+/* Custom Base Rules */
+body {
+  background-color: #ffffff;
+  color: #000000;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Component Layouts */
+.premium-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.premium-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
+}
+
+.glass-blur {
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+}
+
+.glass-light {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 1rem;
+}
+
+.btn-primary {
+  @apply px-6 py-3 bg-black text-white font-bold rounded-lg border border-black hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 transform active:scale-95 cursor-pointer;
+}
+
+.btn-secondary {
+  @apply px-6 py-3 bg-white text-black border border-black/10 font-bold rounded-lg hover:border-black hover:bg-black hover:text-white transition-all duration-300 flex items-center justify-center gap-2 transform active:scale-95 cursor-pointer;
+}
+
+.btn-dark {
+  @apply px-6 py-3 bg-black text-white font-bold rounded-lg border border-black hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-2 transform active:scale-95 cursor-pointer;
+}
+
+.form-input {
+  @apply w-full px-4 py-2.5 bg-white border border-black/10 rounded-lg text-black focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition-all placeholder:text-neutral-400 text-sm;
+}
+
+.form-label {
+  @apply block text-[10px] font-bold uppercase tracking-widest text-black/60 mb-1.5;
+}
+
+/* Premium Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #ffffff;
+  border-left: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
