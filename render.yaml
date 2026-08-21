@@ -1,0 +1,41 @@
+services:
+  # 1. Service Backend (Web Service Node.js)
+  - type: web
+    name: automag-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: DATABASE_FILE
+        value: /data/database.sqlite
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false # Saisie demandée lors de la création sur Render
+      # Variables Cloudinary optionnelles (à saisir ou laisser vides au besoin)
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+    disk:
+      name: sqlite-data
+      mountPath: /data
+      sizeGB: 1
+
+  # 2. Service Frontend (Static Site Vite)
+  - type: web
+    name: automag-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false # Saisie demandée lors de la création (ex: https://automag-backend.onrender.com/api)
+      - key: VITE_WHATSAPP_SELLER_NUMBER
+        value: "221770000000"
