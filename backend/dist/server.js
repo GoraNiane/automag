@@ -46,3 +46,4 @@ app.get('*', (req, res, next) => {
 app.listen(PORT, () => {
     console.log(`[AutoElite Server] Running on http://localhost:${PORT}`);
 });
+exports.default = app;
