@@ -11,9 +11,9 @@ dotenv_1.default.config();
 const pool = mysql2_1.default.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
+    password: process.env.DB_PASSWORD || '2004',
     database: process.env.DB_DATABASE || 'automag',
-    port: parseInt(process.env.DB_PORT || '3306'),
+    port: parseInt(process.env.DB_PORT || '3308'),
     connectionLimit: 10,
     multipleStatements: true
 });

@@ -11,7 +11,7 @@ router.post('/login', (req, res) => {
     if (!password) {
         return res.status(400).json({ message: 'Veuillez saisir le mot de passe.' });
     }
-    const fixedPassword = process.env.ADMIN_PASSWORD || 'adminpassword123';
+    const fixedPassword = process.env.ADMIN_PASSWORD || 'Goraniane2004';
     if (password !== fixedPassword) {
         return res.status(401).json({ message: 'Code d\'accès incorrect.' });
     }

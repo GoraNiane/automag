@@ -19,6 +19,7 @@ const pool = mysql.createPool({
 pool.getConnection((err, connection) => {
   if (err) {
     console.error('Failed to connect to MariaDB database:', err.message);
+    console.error('Full connection error object:', err);
   } else {
     console.log(`Connected to MariaDB database successfully.`);
     connection.release();
