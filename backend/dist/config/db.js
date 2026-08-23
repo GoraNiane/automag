@@ -10,26 +10,38 @@ dotenv_1.default.config();
 // Create a connection pool to MariaDB
 const pool = mysql2_1.default.createPool({
     host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
+    user: process.env.DB_USER || '',
     password: process.env.DB_PASSWORD || '2004',
     database: process.env.DB_DATABASE || 'automag',
     port: parseInt(process.env.DB_PORT || '3308'),
     connectionLimit: 10,
     multipleStatements: true
 });
+let isDbConnected = false;
+let hasConnectionAttempted = false;
 // Check database connection at startup
 pool.getConnection((err, connection) => {
+    hasConnectionAttempted = true;
     if (err) {
         console.error('Failed to connect to MariaDB database:', err.message);
+        console.error('Full connection error object:', err);
+        isDbConnected = false;
     }
     else {
         console.log(`Connected to MariaDB database successfully.`);
+        isDbConnected = true;
         connection.release();
         initializeDatabase();
     }
 });
 // SQLite-compatible callback wrapper for mysql2
 const db = {
+    get isConnected() {
+        return isDbConnected;
+    },
+    get hasAttempted() {
+        return hasConnectionAttempted;
+    },
     serialize(callback) {
         // MySQL handles parallel execution automatically; we run the callback immediately
         callback();
@@ -40,6 +52,11 @@ const db = {
         if (typeof params === 'function') {
             actualCallback = params;
             actualParams = [];
+        }
+        if (hasConnectionAttempted && !isDbConnected) {
+            if (actualCallback)
+                actualCallback.call({}, new Error('Database is not connected'));
+            return;
         }
         pool.query(sql, actualParams || [], function (err, results) {
             if (err) {
@@ -62,6 +79,11 @@ const db = {
             actualCallback = params;
             actualParams = [];
         }
+        if (hasConnectionAttempted && !isDbConnected) {
+            if (actualCallback)
+                actualCallback(new Error('Database is not connected'), null);
+            return;
+        }
         pool.query(sql, actualParams || [], (err, results) => {
             if (err) {
                 if (actualCallback)
@@ -79,6 +101,11 @@ const db = {
         if (typeof params === 'function') {
             actualCallback = params;
             actualParams = [];
+        }
+        if (hasConnectionAttempted && !isDbConnected) {
+            if (actualCallback)
+                actualCallback(new Error('Database is not connected'), []);
+            return;
         }
         pool.query(sql, actualParams || [], (err, results) => {
             if (err) {

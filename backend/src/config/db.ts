@@ -14,14 +14,19 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   multipleStatements: true
 });
+let isDbConnected = false;
+let hasConnectionAttempted = false;
 
 // Check database connection at startup
 pool.getConnection((err, connection) => {
+  hasConnectionAttempted = true;
   if (err) {
     console.error('Failed to connect to MariaDB database:', err.message);
     console.error('Full connection error object:', err);
+    isDbConnected = false;
   } else {
     console.log(`Connected to MariaDB database successfully.`);
+    isDbConnected = true;
     connection.release();
     initializeDatabase();
   }
@@ -29,6 +34,14 @@ pool.getConnection((err, connection) => {
 
 // SQLite-compatible callback wrapper for mysql2
 const db = {
+  get isConnected() {
+    return isDbConnected;
+  },
+
+  get hasAttempted() {
+    return hasConnectionAttempted;
+  },
+
   serialize(callback: () => void) {
     // MySQL handles parallel execution automatically; we run the callback immediately
     callback();
@@ -40,6 +53,11 @@ const db = {
     if (typeof params === 'function') {
       actualCallback = params;
       actualParams = [];
+    }
+
+    if (hasConnectionAttempted && !isDbConnected) {
+      if (actualCallback) actualCallback.call({}, new Error('Database is not connected'));
+      return;
     }
 
     pool.query(sql, actualParams || [], function (err, results: any) {
@@ -63,6 +81,11 @@ const db = {
       actualParams = [];
     }
 
+    if (hasConnectionAttempted && !isDbConnected) {
+      if (actualCallback) actualCallback(new Error('Database is not connected'), null);
+      return;
+    }
+
     pool.query(sql, actualParams || [], (err, results: any) => {
       if (err) {
         if (actualCallback) actualCallback(err, null);
@@ -79,6 +102,11 @@ const db = {
     if (typeof params === 'function') {
       actualCallback = params;
       actualParams = [];
+    }
+
+    if (hasConnectionAttempted && !isDbConnected) {
+      if (actualCallback) actualCallback(new Error('Database is not connected'), []);
+      return;
     }
 
     pool.query(sql, actualParams || [], (err, results: any) => {
