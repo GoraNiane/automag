@@ -7,9 +7,15 @@ const sqlite3_1 = __importDefault(require("sqlite3"));
 const path_1 = __importDefault(require("path"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const fs_1 = __importDefault(require("fs"));
 dotenv_1.default.config();
 const dbFile = process.env.DATABASE_FILE || 'database.sqlite';
 const dbPath = path_1.default.resolve(process.cwd(), dbFile);
+// S'assurer que le dossier parent existe (ex: dossier persistant /data sur Render ou dossier de dev local)
+const dbDir = path_1.default.dirname(dbPath);
+if (!fs_1.default.existsSync(dbDir)) {
+    fs_1.default.mkdirSync(dbDir, { recursive: true });
+}
 // Connect to SQLite Database
 const db = new sqlite3_1.default.Database(dbPath, (err) => {
     if (err) {

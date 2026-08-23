@@ -2,11 +2,18 @@ import sqlite3 from 'sqlite3';
 import path from 'path';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
+import fs from 'fs';
 
 dotenv.config();
 
 const dbFile = process.env.DATABASE_FILE || 'database.sqlite';
 const dbPath = path.resolve(process.cwd(), dbFile);
+
+// S'assurer que le dossier parent existe (ex: dossier persistant /data sur Render ou dossier de dev local)
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
 
 // Connect to SQLite Database
 const db = new sqlite3.Database(dbPath, (err) => {
