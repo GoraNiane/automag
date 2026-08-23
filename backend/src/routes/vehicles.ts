@@ -288,7 +288,7 @@ router.put('/:id', protect, (req: AuthRequest, res: Response) => {
         equipmentsStr, imagesStr, primaryImage, condition, availability, id
       ];
 
-      db.run(sql, params, function(errRun) {
+      db.run(sql, params, function(this: any, errRun: any) {
         if (errRun) {
           return res.status(500).json({ message: 'Erreur de base de données : ' + errRun.message });
         }

@@ -7,9 +7,13 @@ import { protect, adminOnly, AuthRequest } from '../middleware/auth';
 const router = Router();
 
 // Ensure uploads folder exists
-const uploadDir = path.join(process.cwd(), 'uploads');
+const uploadDir = process.env.VERCEL ? '/tmp/uploads' : path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+  try {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  } catch (err: any) {
+    console.error('Failed to create uploads directory:', err.message);
+  }
 }
 
 const storage = multer.diskStorage({
