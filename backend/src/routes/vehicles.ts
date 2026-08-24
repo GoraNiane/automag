@@ -348,7 +348,7 @@ router.delete('/:id', protect, (req: AuthRequest, res: Response) => {
 });
 
 // 6. POST /api/vehicles/:id/images - Upload listing images (to memory + Cloudinary)
-router.post('/:id/images', protect, upload.array('photos', 10), (req: AuthRequest, res: Response) => {
+router.post('/:id/images', protect, upload.array('photos', 7), (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const files = req.files as Express.Multer.File[];
 
@@ -362,8 +362,8 @@ router.post('/:id/images', protect, upload.array('photos', 10), (req: AuthReques
     }
 
     const proceedWithUpload = async (isNewDraft: boolean, existingImages: VehicleImage[]) => {
-      if (existingImages.length + files.length > 10) {
-        return res.status(400).json({ message: 'Nombre maximum de photos (10) dépassé.' });
+      if (existingImages.length + files.length > 7) {
+        return res.status(400).json({ message: 'Nombre maximum de photos (7) dépassé.' });
       }
 
       const uploadedImages: VehicleImage[] = [];

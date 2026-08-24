@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { 
   Heart, Share2, MapPin, Calendar, Gauge, Fuel, 
   Settings, Maximize, Check, Phone, Mail, 
-  MessageSquare, Send, CheckCircle 
+  MessageSquare, Send, CheckCircle, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useMockStore } from '../store/mockStore';
 import { WHATSAPP_SELLER_NUMBER, getWhatsAppLink } from '../config/whatsapp';
@@ -20,7 +20,92 @@ export default function CarDetails() {
 
   // Slide index
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  const placeholderImage = 'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&q=80&w=800';
+  const photos = vehicle.images && vehicle.images.length > 0 
+    ? vehicle.images 
+    : [vehicle.primaryImage || placeholderImage];
+
+  const handleNextImage = () => {
+    setIsZoomed(false);
+    setActiveImageIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
+  };
+
+  const handlePrevImage = () => {
+    setIsZoomed(false);
+    setActiveImageIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isZoomed) return;
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setZoomPosition({ x, y });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isZoomed) return;
+    const touch = e.touches[0];
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((touch.clientX - left) / width) * 100;
+    const y = ((touch.clientY - top) / height) * 100;
+    setZoomPosition({
+      x: Math.max(0, Math.min(100, x)),
+      y: Math.max(0, Math.min(100, y))
+    });
+  };
+
+  const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isZoomed) {
+      setIsZoomed(false);
+    } else {
+      const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+      const x = ((e.clientX - left) / width) * 100;
+      const y = ((e.clientY - top) / height) * 100;
+      setZoomPosition({ x, y });
+      setIsZoomed(true);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (isZoomed) return;
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (isZoomed || touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diffX = touchStartX - touchEndX;
+
+    if (Math.abs(diffX) > 50) {
+      if (diffX > 0) {
+        handleNextImage();
+      } else {
+        handlePrevImage();
+      }
+    }
+    setTouchStartX(null);
+  };
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (photos.length <= 1) return;
+      if (e.key === 'ArrowRight') {
+        handleNextImage();
+      } else if (e.key === 'ArrowLeft') {
+        handlePrevImage();
+      } else if (e.key === 'Escape') {
+        setIsFullscreenOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeImageIndex, photos]);
 
   // Form Booking Contact / Message
   const [name, setName] = useState(currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '');
@@ -93,39 +178,94 @@ export default function CarDetails() {
           {/* Photos gallery */}
           <div className="space-y-4">
             {/* Primary Display */}
-            <div className="relative h-96 sm:h-[480px] bg-slate-950 rounded-2xl overflow-hidden group shadow-lg border border-slate-100">
+            <div 
+              className="relative h-96 sm:h-[480px] bg-slate-950 rounded-2xl overflow-hidden group shadow-lg border border-slate-100 select-none"
+              onMouseMove={handleMouseMove}
+              onTouchMove={handleTouchMove}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onClick={handleImageClick}
+            >
               <img 
-                src={vehicle.images[activeImageIndex] || vehicle.primaryImage} 
+                src={photos[activeImageIndex]} 
                 alt={`${vehicle.brand} ${vehicle.model}`} 
-                className="w-full h-full object-cover" 
+                style={isZoomed ? {
+                  transform: 'scale(1.4)',
+                  transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                  transition: 'transform 0.1s ease-out'
+                } : {
+                  transform: 'scale(1)',
+                  transition: 'transform 0.3s ease-out'
+                }}
+                className={`w-full h-full object-cover select-none pointer-events-none transition-transform duration-300`} 
               />
               
-              {/* Fullscreen Trigger */}
-              <button 
-                onClick={() => setFullscreenImage(vehicle.images[activeImageIndex] || vehicle.primaryImage)}
-                className="absolute bottom-4 right-4 p-2.5 bg-slate-950/80 hover:bg-slate-950 backdrop-blur-md text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                title="Plein écran"
-              >
-                <Maximize className="w-5 h-5" />
-              </button>
+              {/* Overlay elements when not zoomed */}
+              {!isZoomed && (
+                <>
+                  {/* Fullscreen Trigger */}
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setIsFullscreenOpen(true); }}
+                    className="absolute bottom-4 right-4 p-2.5 bg-slate-950/80 hover:bg-slate-950 backdrop-blur-md text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                    title="Plein écran"
+                  >
+                    <Maximize className="w-5 h-5" />
+                  </button>
 
-              {/* Badges */}
-              <div className="absolute top-4 left-4">
-                <span className="bg-slate-900/90 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-xs">
-                  {vehicle.condition}
-                </span>
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className="bg-slate-900/90 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-xs">
+                      {vehicle.condition}
+                    </span>
+                  </div>
+
+                  {/* Photo Counter */}
+                  {photos.length > 1 && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <span className="bg-slate-900/80 text-white text-[11px] font-bold px-3 py-1 rounded-lg backdrop-blur-xs tracking-wider">
+                        {activeImageIndex + 1} / {photos.length}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Prev/Next buttons on desktop */}
+                  {photos.length > 1 && (
+                    <>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handlePrevImage(); }}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2.5 bg-white/90 hover:bg-white text-slate-800 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                        title="Précédent"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleNextImage(); }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2.5 bg-white/90 hover:bg-white text-slate-800 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                        title="Suivant"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
+
+              {/* Help zoom / unzoom text indicator */}
+              <div className="absolute bottom-4 left-4 z-10 pointer-events-none bg-slate-900/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-xs transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                {isZoomed ? 'Cliquer pour réduire' : 'Cliquer pour zoomer'}
               </div>
             </div>
 
             {/* Thumbnails */}
-            {vehicle.images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-1">
-                {vehicle.images.map((img, idx) => (
+            {photos.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto pb-1.5 scrollbar-thin scrollbar-thumb-slate-200">
+                {photos.map((img, idx) => (
                   <button 
                     key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
+                    type="button"
+                    onClick={() => { setIsZoomed(false); setActiveImageIndex(idx); }}
                     className={`relative w-24 h-16 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all ${
-                      activeImageIndex === idx ? 'border-accent-700 scale-95 shadow-sm' : 'border-slate-200 hover:border-slate-400'
+                      activeImageIndex === idx ? 'border-accent-700 scale-95 shadow-sm ring-2 ring-accent-700/10' : 'border-slate-200 hover:border-slate-400'
                     }`}
                   >
                     <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
@@ -382,15 +522,52 @@ export default function CarDetails() {
       )}
 
       {/* Fullscreen Overlay */}
-      {fullscreenImage && (
-        <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[999] flex items-center justify-center p-4">
+      {isFullscreenOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[999] flex items-center justify-center p-4 select-none"
+          onClick={() => setIsFullscreenOpen(false)}
+        >
           <button 
-            onClick={() => setFullscreenImage(null)}
-            className="absolute top-6 right-6 text-white hover:text-accent-700 p-2 text-xl font-bold bg-slate-900/60 rounded-full"
+            onClick={() => setIsFullscreenOpen(false)}
+            className="absolute top-6 right-6 text-white hover:text-accent-700 p-2 text-xl font-bold bg-slate-900/60 rounded-full z-50 transition-colors"
           >
             ✕
           </button>
-          <img src={fullscreenImage} alt="Fullscreen View" className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" />
+          
+          {photos.length > 1 && (
+            <>
+              <button 
+                onClick={(e) => { e.stopPropagation(); handlePrevImage(); }}
+                className="absolute left-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-50"
+                title="Précédent"
+              >
+                <ChevronLeft className="w-8 h-8" />
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleNextImage(); }}
+                className="absolute right-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-50"
+                title="Suivant"
+              >
+                <ChevronRight className="w-8 h-8" />
+              </button>
+            </>
+          )}
+
+          <div 
+            className="relative max-w-full max-h-[85vh] flex flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img 
+              src={photos[activeImageIndex]} 
+              alt="Fullscreen View" 
+              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl" 
+            />
+            {photos.length > 1 && (
+              <span className="text-white/60 text-xs font-semibold mt-4">
+                {activeImageIndex + 1} / {photos.length}
+              </span>
+            )}
+          </div>
         </div>
       )}
     </div>

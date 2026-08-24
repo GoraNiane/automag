@@ -105,8 +105,8 @@ export default function AdminNewListing() {
   const handleUploadFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
 
-    if (uploadedPhotos.length + files.length > 10) {
-      alert('Vous pouvez ajouter jusqu\'à 10 photos maximum par véhicule.');
+    if (uploadedPhotos.length + files.length > 7) {
+      alert('Vous pouvez ajouter jusqu\'à 7 photos maximum par véhicule.');
       return;
     }
 
@@ -518,9 +518,9 @@ export default function AdminNewListing() {
             <div className="flex justify-between items-center border-b border-slate-50 pb-2">
               <h2 className="text-base font-bold text-slate-800">Gestionnaire de Photos</h2>
               <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-                uploadedPhotos.length >= 10 ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-650'
+                uploadedPhotos.length >= 7 ? 'bg-red-50 text-red-600' : 'bg-slate-50 text-slate-650'
               }`}>
-                {uploadedPhotos.length} / 10 photos
+                {uploadedPhotos.length} / 7 photos
               </span>
             </div>
             
@@ -534,7 +534,7 @@ export default function AdminNewListing() {
                 Prenez des photos nettes, bien éclairées et sous plusieurs angles pour présenter le véhicule sous son meilleur jour. Vous pouvez photographier le véhicule directement avec votre téléphone ou choisir des images dans votre galerie.
               </p>
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider pt-1 border-t border-slate-250/20">
-                <span>• 10 photos maximum</span>
+                <span>• 7 photos maximum</span>
                 <span>• JPG, PNG, WEBP</span>
                 <span>• Optimisation automatique</span>
               </div>
@@ -572,7 +572,7 @@ export default function AdminNewListing() {
                 <button
                   type="button"
                   onClick={() => document.getElementById('camera-file-input')?.click()}
-                  disabled={uploadedPhotos.length >= 10}
+                  disabled={uploadedPhotos.length >= 7}
                   className="border-2 border-dashed border-slate-200 hover:border-accent-700 rounded-2xl p-6 text-center bg-slate-50 hover:bg-slate-100/50 cursor-pointer flex flex-col items-center justify-center gap-3 transition-all disabled:opacity-40 disabled:cursor-not-allowed group"
                 >
                   <Camera className="w-8 h-8 text-slate-400 group-hover:text-accent-700 transition-colors" />
@@ -585,7 +585,7 @@ export default function AdminNewListing() {
                 <button
                   type="button"
                   onClick={() => document.getElementById('gallery-file-input')?.click()}
-                  disabled={uploadedPhotos.length >= 10}
+                  disabled={uploadedPhotos.length >= 7}
                   className="border-2 border-dashed border-slate-200 hover:border-accent-700 rounded-2xl p-6 text-center bg-slate-50 hover:bg-slate-100/50 cursor-pointer flex flex-col items-center justify-center gap-3 transition-all disabled:opacity-40 disabled:cursor-not-allowed group"
                 >
                   <ImageIcon className="w-8 h-8 text-slate-400 group-hover:text-accent-700 transition-colors" />
