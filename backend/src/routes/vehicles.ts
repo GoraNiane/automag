@@ -176,7 +176,7 @@ router.post('/', protect, (req: AuthRequest, res: Response) => {
           UPDATE vehicles
           SET brand = ?, model = ?, year = ?, price = ?, mileage = ?, fuel = ?, transmission = ?,
               bodyType = ?, color = ?, location = ?, power = ?, description = ?, equipments = ?,
-              images = ?, primaryImage = ?, condition = ?, availability = ?
+              images = ?, primaryImage = ?, \`condition\` = ?, availability = ?
           WHERE id = ?
         `;
         const paramsUpdate = [
@@ -207,7 +207,7 @@ router.post('/', protect, (req: AuthRequest, res: Response) => {
         INSERT INTO vehicles (
           id, brand, model, year, price, mileage, fuel, transmission, 
           bodyType, color, location, power, description, equipments, 
-          images, primaryImage, condition, isFeatured, isPromo, availability
+          images, primaryImage, \`condition\`, isFeatured, isPromo, availability
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?)
       `;
       const paramsInsert = [
@@ -278,7 +278,7 @@ router.put('/:id', protect, (req: AuthRequest, res: Response) => {
         SET brand = ?, model = ?, year = ?, price = ?, mileage = ?, fuel = ?, 
             transmission = ?, bodyType = ?, color = ?, location = ?, power = ?, 
             description = ?, equipments = ?, images = ?, primaryImage = ?, 
-            condition = ?, availability = ?
+            \`condition\` = ?, availability = ?
         WHERE id = ?
       `;
 
@@ -400,7 +400,7 @@ router.post('/:id/images', protect, upload.array('photos', 10), (req: AuthReques
       if (isNewDraft) {
         // Insert a draft vehicle in SQLite
         db.run(
-          `INSERT INTO vehicles (id, brand, model, year, price, mileage, fuel, transmission, bodyType, location, primaryImage, images, condition, availability)
+          `INSERT INTO vehicles (id, brand, model, year, price, mileage, fuel, transmission, bodyType, location, primaryImage, images, \`condition\`, availability)
            VALUES (?, '', '', 0, 0, 0, 'Essence', 'Automatique', 'SUV', 'Dakar', ?, ?, 'Neuf', 'Disponible')`,
           [id, primaryImage, imagesStr],
           (errInsert) => {
