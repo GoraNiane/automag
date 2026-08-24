@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useMockStore } from '../store/mockStore';
 import { WHATSAPP_SELLER_NUMBER, getWhatsAppLink } from '../config/whatsapp';
+import { EQUIPMENTS_BY_CATEGORY } from '../config/equipments';
 
 export default function CarDetails() {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +18,33 @@ export default function CarDetails() {
 
   const vehicle = vehicles.find(v => v.id === id);
   const isFav = favorites.includes(id || '');
+
+  // Group the vehicle's equipments by category for display
+  const categorizedEquipments = React.useMemo(() => {
+    if (!vehicle) return [];
+    const allOfficialItems = new Set(EQUIPMENTS_BY_CATEGORY.flatMap(cat => cat.items));
+    const otherItems = (vehicle.equipments || []).filter(eq => !allOfficialItems.has(eq));
+
+    const grouped = EQUIPMENTS_BY_CATEGORY.map(cat => {
+      const presentItems = cat.items.filter(item => (vehicle.equipments || []).includes(item));
+      return {
+        ...cat,
+        presentItems
+      };
+    }).filter(cat => cat.presentItems.length > 0);
+
+    if (otherItems.length > 0) {
+      grouped.push({
+        id: 'other',
+        name: 'Autres équipements',
+        icon: '🔧',
+        items: otherItems,
+        presentItems: otherItems
+      });
+    }
+
+    return grouped;
+  }, [vehicle]);
 
   // Slide index
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -350,19 +378,31 @@ export default function CarDetails() {
           </div>
 
           {/* Equipments */}
-          <div className="bg-white border-2 border-black p-6 sm:p-8 rounded-none shadow-none space-y-4">
-            <h2 className="text-xl font-bold text-black pb-3 border-b border-black/10">Équipements & Options</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {vehicle.equipments.map(eq => (
-                <div key={eq} className="flex items-center gap-2 text-xs font-bold text-black">
-                  <div className="w-5 h-5 bg-black text-white flex items-center justify-center flex-shrink-0 rounded-none">
-                    <Check className="w-3.5 h-3.5" />
+          {categorizedEquipments.length > 0 && (
+            <div className="bg-white border border-slate-100 p-6 sm:p-8 rounded-2xl shadow-sm space-y-6">
+              <h2 className="text-xl font-bold text-slate-900 pb-3 border-b border-slate-100 flex items-center gap-2">
+                ⚙️ Équipements & Options
+              </h2>
+              
+              <div className="space-y-6">
+                {categorizedEquipments.map((cat) => (
+                  <div key={cat.id} className="space-y-3">
+                    <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                      <span className="text-base">{cat.icon}</span> {cat.name}
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pl-7">
+                      {cat.presentItems.map(eq => (
+                        <div key={eq} className="flex items-center gap-2 text-xs font-semibold text-slate-650">
+                          <span className="text-accent-700 font-bold">✓</span>
+                          <span>{eq}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  {eq}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Right Side: Booking Form & Seller Contact (Col span 1) */}

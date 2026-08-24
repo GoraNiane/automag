@@ -8,12 +8,7 @@ import {
 } from 'lucide-react';
 import { compressImage } from '../utils/compression';
 
-const EQUIPMENTS_LIST = [
-  'Climatisation', 'GPS', 'Caméra de recul', 'Bluetooth', 
-  'Sièges chauffants', 'Régulateur de vitesse', 'Jantes alliage', 
-  'Démarrage sans clé', 'Toit panoramique', 'Sellerie cuir', 
-  'Radars de recul 360', 'Apple CarPlay / Android Auto'
-];
+import { EQUIPMENTS_BY_CATEGORY } from '../config/equipments';
 
 export default function AdminNewListing() {
   const navigate = useNavigate();
@@ -42,6 +37,28 @@ export default function AdminNewListing() {
 
   // Step 2: Equipments State
   const [equipments, setEquipments] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(
+    EQUIPMENTS_BY_CATEGORY.map(c => c.id) // All expanded by default
+  );
+
+  const toggleCategoryExpand = (catId: string) => {
+    setExpandedCategories(prev => 
+      prev.includes(catId) ? prev.filter(id => id !== catId) : [...prev, catId]
+    );
+  };
+
+  const toggleSelectAllCategory = (catId: string, items: string[]) => {
+    const allSelected = items.every(item => equipments.includes(item));
+    if (allSelected) {
+      setEquipments(prev => prev.filter(item => !items.includes(item)));
+    } else {
+      setEquipments(prev => {
+        const otherItems = prev.filter(item => !items.includes(item));
+        return [...otherItems, ...items];
+      });
+    }
+  };
 
   // Step 3: Photos State (Stores list of structured VehicleImage objects)
   const [uploadedPhotos, setUploadedPhotos] = useState<VehicleImage[]>([]);
@@ -478,27 +495,144 @@ export default function AdminNewListing() {
         {/* Step 2: Equipments */}
         {step === 2 && (
           <div className="space-y-6">
-            <h2 className="text-base font-bold text-slate-800 border-b border-slate-50 pb-2">Sélectionnez les Équipements</h2>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {EQUIPMENTS_LIST.map((eq) => {
-                const isSelected = equipments.includes(eq);
-                return (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h2 className="text-base font-bold text-slate-800">Sélectionnez les Équipements</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Sélectionnez les options et commodités présentes sur le véhicule.</p>
+              </div>
+              <span className="bg-accent-700/10 text-accent-700 text-xs font-bold px-3 py-1 rounded-full flex-shrink-0 self-start sm:self-center">
+                {equipments.length} équipement{equipments.length > 1 ? 's' : ''} sélectionné{equipments.length > 1 ? 's' : ''}
+              </span>
+            </div>
+
+            {/* Search & Actions Bar */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-grow">
+                <input
+                  type="text"
+                  placeholder="Rechercher un équipement (ex: CarPlay, Caméra...)"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="form-input pl-9"
+                />
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-450 text-xs">
+                  🔍
+                </span>
+                {searchTerm && (
                   <button 
-                    key={eq}
-                    type="button"
-                    onClick={() => toggleEquipment(eq)}
-                    className={`p-3 rounded-xl border text-left text-xs font-semibold flex items-center justify-between transition-all ${
-                      isSelected 
-                        ? 'border-accent-700 bg-accent-750 text-accent-700' 
-                        : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50'
-                    }`}
+                    type="button" 
+                    onClick={() => setSearchTerm('')} 
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-semibold"
                   >
-                    {eq}
-                    {isSelected && <Check className="w-4 h-4 text-accent-700" />}
+                    Vider
                   </button>
+                )}
+              </div>
+              {equipments.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setEquipments([])}
+                  className="btn-secondary py-2 px-4 text-xs font-bold border-red-200 hover:border-red-300 text-red-650 hover:bg-red-50/20 transition-colors"
+                >
+                  Tout désélectionner
+                </button>
+              )}
+            </div>
+
+            {/* Categories List */}
+            <div className="space-y-4">
+              {EQUIPMENTS_BY_CATEGORY.map((cat) => {
+                // Filter items in this category by search term
+                const filteredItems = cat.items.filter(item => 
+                  item.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+
+                if (filteredItems.length === 0) return null;
+
+                const isExpanded = expandedCategories.includes(cat.id);
+                const categorySelectedCount = cat.items.filter(item => equipments.includes(item)).length;
+                const allCategorySelected = cat.items.every(item => equipments.includes(item));
+
+                return (
+                  <div key={cat.id} className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
+                    {/* Header Accordion */}
+                    <div 
+                      onClick={() => toggleCategoryExpand(cat.id)}
+                      className="flex items-center justify-between p-4 bg-slate-50/50 cursor-pointer border-b border-slate-100 select-none hover:bg-slate-50/80 transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-lg">{cat.icon}</span>
+                        <div>
+                          <h3 className="text-xs font-bold text-slate-800">{cat.name}</h3>
+                          <span className="text-[10px] text-slate-505 font-semibold">
+                            {categorySelectedCount} / {cat.items.length} sélectionné{categorySelectedCount > 1 ? 's' : ''}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+                        {/* Select All category toggle */}
+                        <button
+                          type="button"
+                          onClick={() => toggleSelectAllCategory(cat.id, cat.items)}
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded border transition-colors ${
+                            allCategorySelected 
+                              ? 'bg-accent-700 text-white border-accent-700' 
+                              : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+                          }`}
+                        >
+                          {allCategorySelected ? 'Tout retirer' : 'Tout cocher'}
+                        </button>
+                        
+                        {/* Arrow Collapse */}
+                        <span 
+                          onClick={() => toggleCategoryExpand(cat.id)}
+                          className={`text-slate-400 text-xs transition-transform duration-200 cursor-pointer ${
+                            isExpanded ? 'rotate-180' : ''
+                          }`}
+                        >
+                          ▼
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Grid of Items */}
+                    {isExpanded && (
+                      <div className="p-4 bg-white">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                          {filteredItems.map((item) => {
+                            const isSelected = equipments.includes(item);
+                            return (
+                              <button
+                                key={item}
+                                type="button"
+                                onClick={() => toggleEquipment(item)}
+                                className={`p-3 rounded-xl border text-left text-[11px] font-semibold flex items-center justify-between transition-all ${
+                                  isSelected
+                                    ? 'border-accent-700 bg-accent-700/5 text-accent-700 ring-2 ring-accent-700/5 font-bold'
+                                    : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50/50'
+                                }`}
+                              >
+                                <span className="pr-2">{item}</span>
+                                {isSelected && <span className="text-accent-700 text-xs font-bold">✓</span>}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
+              
+              {/* If all categories filtered out */}
+              {EQUIPMENTS_BY_CATEGORY.every(cat => 
+                cat.items.filter(item => item.toLowerCase().includes(searchTerm.toLowerCase())).length === 0
+              ) && (
+                <div className="text-center py-10 bg-slate-50 rounded-2xl border border-slate-200 border-dashed text-slate-500 text-xs">
+                  Aucun équipement ne correspond à votre recherche.
+                </div>
+              )}
             </div>
 
             <div className="flex justify-between pt-6 border-t border-slate-100">

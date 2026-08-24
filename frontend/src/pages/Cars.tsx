@@ -5,7 +5,17 @@ import {
   RefreshCw, ChevronLeft, ChevronRight, X 
 } from 'lucide-react';
 import { useMockStore } from '../store/mockStore';
-import { FuelType, TransmissionType, BodyType, AvailabilityType } from '../types';
+const POPULAR_FILTER_EQUIPMENTS = [
+  'Apple CarPlay',
+  'Android Auto',
+  'Caméra de recul',
+  'Caméra 360°',
+  'Toit panoramique',
+  'Sièges en cuir',
+  'Démarrage sans clé',
+  'Régulateur de vitesse adaptatif',
+  'Bluetooth'
+];
 
 export default function Cars() {
   const location = useLocation();
@@ -31,6 +41,19 @@ export default function Cars() {
   const [carLocation, setCarLocation] = useState(searchParams.get('location') || '');
   const [condition, setCondition] = useState(searchParams.get('condition') || '');
   const [availability, setAvailability] = useState(searchParams.get('availability') || '');
+  const [selectedEquipments, setSelectedEquipments] = useState<string[]>(() => {
+    const eqParam = searchParams.get('equipments');
+    return eqParam ? eqParam.split(',').filter(Boolean) : [];
+  });
+
+  const handleToggleEquipmentFilter = (eqName: string) => {
+    const updated = selectedEquipments.includes(eqName)
+      ? selectedEquipments.filter(item => item !== eqName)
+      : [...selectedEquipments, eqName];
+      
+    setSelectedEquipments(updated);
+    applyFilters({ equipments: updated.join(',') });
+  };
   
   // Sort State
   const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || 'recent');
@@ -55,6 +78,10 @@ export default function Cars() {
     setCondition(params.get('condition') || '');
     setAvailability(params.get('availability') || '');
     setSortBy(params.get('sortBy') || 'recent');
+    
+    const eqParam = params.get('equipments');
+    setSelectedEquipments(eqParam ? eqParam.split(',').filter(Boolean) : []);
+    
     setCurrentPage(1); // reset to page 1 on query change
   }, [location.search]);
 
@@ -90,6 +117,7 @@ export default function Cars() {
     setCondition('');
     setAvailability('');
     setSortBy('recent');
+    setSelectedEquipments([]);
     navigate(location.pathname);
   };
 
@@ -114,6 +142,11 @@ export default function Cars() {
     if (carLocation && v.location.toLowerCase() !== carLocation.toLowerCase()) return false;
     if (condition && v.condition !== condition) return false;
     if (availability && v.availability !== availability) return false;
+
+    if (selectedEquipments.length > 0) {
+      const hasAll = selectedEquipments.every(eq => (v.equipments || []).includes(eq));
+      if (!hasAll) return false;
+    }
 
     return true;
   });
@@ -335,6 +368,27 @@ export default function Cars() {
             <option key={loc} value={loc}>{loc}</option>
           ))}
         </select>
+      </div>
+
+      {/* Équipements populaires */}
+      <div className="space-y-2 pt-4 border-t border-slate-100">
+        <label className="form-label font-bold text-slate-800">Équipements</label>
+        <div className="space-y-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
+          {POPULAR_FILTER_EQUIPMENTS.map((eq) => {
+            const isChecked = selectedEquipments.includes(eq);
+            return (
+              <label key={eq} className="flex items-center gap-2 cursor-pointer select-none text-xs text-slate-650 hover:text-slate-800 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={() => handleToggleEquipmentFilter(eq)}
+                  className="rounded border-slate-300 text-accent-700 focus:ring-accent-700"
+                />
+                <span>{eq}</span>
+              </label>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
