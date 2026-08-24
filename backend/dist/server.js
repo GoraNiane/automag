@@ -45,9 +45,14 @@ app.get('*', (req, res, next) => {
     });
 });
 db_1.dbInitPromise.then(() => {
-    app.listen(PORT, () => {
-        console.log(`[AutoElite Server] Running on http://localhost:${PORT}`);
-    });
+    if (!process.env.VERCEL) {
+        app.listen(PORT, () => {
+            console.log(`[AutoElite Server] Running on http://localhost:${PORT}`);
+        });
+    }
+    else {
+        console.log('[AutoElite Server] Running in serverless Vercel environment.');
+    }
 }).catch((err) => {
     console.error('[DB] Database initialization failed. Server shutting down:', err);
     process.exit(1);

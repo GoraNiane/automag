@@ -31,7 +31,7 @@ const pool = mysql2_1.default.createPool({
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_DATABASE || 'automag',
     port: parseInt(process.env.DB_PORT || '3308'),
-    connectionLimit: 4,
+    connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '4'),
     waitForConnections: true,
     queueLimit: 0,
     multipleStatements: true
