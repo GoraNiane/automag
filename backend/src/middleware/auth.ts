@@ -20,7 +20,11 @@ export function protect(req: AuthRequest, res: Response, next: NextFunction) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'autoelite_super_secret_jwt_key_98765') as any;
+    if (!process.env.JWT_SECRET) {
+      console.error('JWT_SECRET is not configured');
+      return res.status(500).json({ message: 'Erreur interne du serveur.' });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
     req.user = decoded;
     next();
   } catch (err) {

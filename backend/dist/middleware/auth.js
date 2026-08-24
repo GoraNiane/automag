@@ -15,7 +15,11 @@ function protect(req, res, next) {
         return res.status(401).json({ message: 'Accès refusé. Aucun token fourni.' });
     }
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'autoelite_super_secret_jwt_key_98765');
+        if (!process.env.JWT_SECRET) {
+            console.error('JWT_SECRET is not configured');
+            return res.status(500).json({ message: 'Erreur interne du serveur.' });
+        }
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
     }

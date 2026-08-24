@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
+const db_1 = require("./config/db"); // Connects and triggers database table migrations/seeding
 // Routes
 const auth_1 = __importDefault(require("./routes/auth"));
 const vehicles_1 = __importDefault(require("./routes/vehicles"));
@@ -43,7 +44,12 @@ app.get('*', (req, res, next) => {
         }
     });
 });
-app.listen(PORT, () => {
-    console.log(`[AutoElite Server] Running on http://localhost:${PORT}`);
+db_1.dbInitPromise.then(() => {
+    app.listen(PORT, () => {
+        console.log(`[AutoElite Server] Running on http://localhost:${PORT}`);
+    });
+}).catch((err) => {
+    console.error('[DB] Database initialization failed. Server shutting down:', err);
+    process.exit(1);
 });
 exports.default = app;

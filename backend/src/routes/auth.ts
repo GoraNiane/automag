@@ -5,72 +5,83 @@ import db from '../config/db';
 
 const router = Router();
 
-router.post('/login', (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  if (!password) {
-    return res.status(400).json({ message: 'Veuillez saisir le mot de passe.' });
-  }
+function findUserByEmail(email: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
+    });
+  });
+}
 
-  const userEmail = email || 'admin@autoelite.sn';
+router.post('/login', async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
 
-  // Tenter d'abord l'authentification avec la base de données
-  db.get('SELECT * FROM users WHERE email = ?', [userEmail], async (err, user) => {
-    let isAuthenticated = false;
-    let loggedInUser = null;
-
-    if (!err && user) {
-      try {
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (isMatch) {
-          isAuthenticated = true;
-          loggedInUser = {
-            id: user.id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role,
-            avatar: user.avatar,
-            location: user.location
-          };
-        }
-      } catch (bcryptErr) {
-        console.error('Bcrypt comparison error:', bcryptErr);
-      }
+    if (!email || !password) {
+      return res.status(400).json({
+        message: 'Email et mot de passe requis.'
+      });
     }
 
-    // Repli (fallback) sur la variable d'environnement ou le mot de passe par défaut
-    if (!isAuthenticated) {
-      const fixedPassword = process.env.ADMIN_PASSWORD || 'Goraniane2004';
-      if (password === fixedPassword && userEmail.toLowerCase() === 'admin@autoelite.sn') {
-        isAuthenticated = true;
-        loggedInUser = {
-          id: 'usr-admin',
-          email: 'admin@autoelite.sn',
-          firstName: 'Administrateur',
-          lastName: 'AutoElite',
-          role: 'ADMIN',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
-          location: 'Dakar'
-        };
-      }
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // Verify configurations
+    if (!process.env.JWT_SECRET) {
+      console.error('[AUTH] JWT_SECRET is not configured.');
+      return res.status(500).json({ message: 'Erreur de configuration du serveur.' });
     }
 
-    if (!isAuthenticated || !loggedInUser) {
-      return res.status(401).json({ message: 'Code d\'accès incorrect.' });
+    const user = await findUserByEmail(normalizedEmail);
+
+    if (!user) {
+      console.log('[AUTH] Login failed');
+      return res.status(401).json({
+        message: 'Identifiants incorrects.'
+      });
     }
 
-    // Signer le token JWT
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      console.log('[AUTH] Login failed');
+      return res.status(401).json({
+        message: 'Identifiants incorrects.'
+      });
+    }
+
+    if (user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') {
+      console.log('[AUTH] Login failed');
+      return res.status(403).json({
+        message: 'Accès réservé aux administrateurs.'
+      });
+    }
+
+    // Sign the JWT token
     const token = jwt.sign(
-      { id: loggedInUser.id, email: loggedInUser.email, role: loggedInUser.role },
-      process.env.JWT_SECRET || 'autoelite_super_secret_jwt_key_98765',
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
 
+    console.log('[AUTH] Login successful');
     return res.json({
       token,
-      user: loggedInUser
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        avatar: user.avatar,
+        location: user.location
+      }
     });
-  });
+  } catch (error) {
+    console.log('[AUTH] Login failed');
+    console.error('[AUTH] Error during admin login:', error);
+    return res.status(500).json({ message: 'Erreur interne du serveur.' });
+  }
 });
 
 export default router;

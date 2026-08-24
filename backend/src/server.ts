@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import db from './config/db'; // Connects and triggers database table migrations/seeding
+import db, { dbInitPromise } from './config/db'; // Connects and triggers database table migrations/seeding
 
 // Routes
 import authRoutes from './routes/auth';
@@ -49,8 +49,13 @@ app.get('*', (req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`[AutoElite Server] Running on http://localhost:${PORT}`);
+dbInitPromise.then(() => {
+  app.listen(PORT, () => {
+    console.log(`[AutoElite Server] Running on http://localhost:${PORT}`);
+  });
+}).catch((err) => {
+  console.error('[DB] Database initialization failed. Server shutting down:', err);
+  process.exit(1);
 });
 
 export default app;
