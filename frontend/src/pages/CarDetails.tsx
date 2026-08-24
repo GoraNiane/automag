@@ -54,9 +54,9 @@ export default function CarDetails() {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const placeholderImage = 'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&q=80&w=800';
-  const photos = vehicle.images && vehicle.images.length > 0 
+  const photos = vehicle?.images && vehicle?.images.length > 0 
     ? vehicle.images 
-    : [vehicle.primaryImage || placeholderImage];
+    : [vehicle?.primaryImage || placeholderImage];
 
   const handleNextImage = () => {
     setIsZoomed(false);
