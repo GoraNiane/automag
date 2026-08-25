@@ -107,7 +107,7 @@ export default function PublicLayout() {
             </div>
             <div>
               <span className="text-xl font-display font-bold tracking-tight text-black">
-                AUTO<span className="font-light text-black/80">ELITE</span>
+                NBKF AUTO<span className="font-light text-black/80">ELITE</span>
               </span>
               <span className="block text-[9px] uppercase tracking-widest text-black/50 font-bold leading-none">
                 Sénégal
@@ -213,7 +213,7 @@ export default function PublicLayout() {
                   <Car className="w-6 h-6 text-black" />
                 </div>
                 <span className="text-xl font-display font-bold tracking-tight text-white">
-                  AUTO<span className="font-light text-white/70">ELITE</span>
+                  NBKF AUTO<span className="font-light text-white/70">ELITE</span>
                 </span>
               </div>
               <p className="text-sm text-white/50 mb-6 leading-relaxed">

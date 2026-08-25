@@ -66,7 +66,7 @@ export default function AdminLayout() {
           <div className="space-y-8">
             <div className="pb-6 border-b border-white/10 flex items-center gap-2">
               <span className="text-xl font-display font-bold tracking-tight text-white">
-                AUTO<span className="font-light text-white/80">ELITE</span>
+                NBKF AUTO<span className="font-light text-white/80">ELITE</span>
               </span>
               <span className="text-[9px] px-2 py-0.5 bg-white/10 text-white/95 rounded-full uppercase font-bold tracking-widest font-mono">
                 System
