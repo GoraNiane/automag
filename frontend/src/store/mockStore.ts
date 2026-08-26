@@ -50,11 +50,10 @@ const offlineUsers: User[] = [
   {
     id: 'usr-admin',
     email: 'admin@autoelite.sn',
-    phone: '+221 77 123 45 67',
+    phone: '+221 78 166 20 09',
     firstName: 'Ibrahima',
     lastName: 'Diallo',
     role: 'ADMIN',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
     location: 'Dakar',
     createdAt: '2025-01-10T12:00:00Z'
   }

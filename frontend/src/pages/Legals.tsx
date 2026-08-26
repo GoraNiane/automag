@@ -30,7 +30,7 @@ export default function Legals() {
         return {
           title: "Mentions Légales",
           subtitle: "AutoElite Sénégal",
-          body: "La plateforme AutoElite est éditée par AutoElite SAS, société de droit sénégalais au capital de 10 000 000 FCFA, immatriculée au RCCM de Dakar. Directeur de la publication : Ibrahima Diallo. Hébergeur de la plateforme : Vercel / Render S3 compatible. Pour toute réclamation, contactez-nous par mail à legal@autoelite.sn."
+          body: "La plateforme AutoElite est éditée par AutoElite SAS, société de droit sénégalais au capital de 10 000 000 FCFA, immatriculée au RCCM de Dakar. Directeur de la publication : Ibrahima Diallo. Hébergeur de la plateforme : Vercel / Render S3 compatible. Pour toute réclamation, contactez-nous par mail à niane0211@gmail.com."
         };
     }
   };
@@ -47,7 +47,7 @@ export default function Legals() {
       <div className="bg-white border border-slate-100 p-8 rounded-2xl shadow-sm text-slate-600 text-sm leading-relaxed space-y-4 font-medium">
         <p>{body}</p>
         <p>
-          Pour en savoir plus sur l'exercice de vos droits ou pour toute question relative à l'utilisation de la plateforme, vous pouvez contacter notre service juridique à l'adresse email <strong className="text-accent-700">legal@autoelite.sn</strong>.
+          Pour en savoir plus sur l'exercice de vos droits ou pour toute question relative à l'utilisation de la plateforme, vous pouvez contacter notre service juridique à l'adresse email <strong className="text-accent-700">niane0211@gmail.com</strong>.
         </p>
       </div>
 

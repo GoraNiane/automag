@@ -7,6 +7,13 @@ import {
 import { useMockStore } from '../store/mockStore';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 import { getWhatsAppLink } from '../config/whatsapp';
+import TikTokIcon from '../components/TikTokIcon';
+import TwitterIcon from '../components/TwitterIcon';
+import InstagramIcon from '../components/InstagramIcon';
+import LinkedInIcon from '../components/LinkedInIcon';
+import { TIKTOK_URL, TWITTER_URL, INSTAGRAM_URL, LINKEDIN_URL } from '../config/socials';
+
+
 
 
 export default function PublicLayout() {
@@ -66,7 +73,7 @@ export default function PublicLayout() {
       <div className="w-full overflow-hidden bg-black text-white text-xs py-2.5 border-b border-white/10 whitespace-nowrap flex items-center">
         <div className="inline-block animate-ticker">
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
-            <Phone className="w-3.5 h-3.5 text-white" /> +221 33 800 00 00
+            <Phone className="w-3.5 h-3.5 text-white" /> +221 78 166 20 09
           </span>
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
             <MapPin className="w-3.5 h-3.5 text-white" /> VDN, Dakar, Sénégal
@@ -75,15 +82,15 @@ export default function PublicLayout() {
             Horaires : Lun - Sam / 8h00 - 19h00
           </span>
           <span className="text-white font-extrabold mx-8">
-            AutoElite — Qualité. Fiabilité. Confiance.
+            NBKF AutoElite — Qualité. Fiabilité. Confiance.
           </span>
         </div>
         <div className="inline-block animate-ticker">
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
-            <Phone className="w-3.5 h-3.5 text-white" /> +221 33 800 00 00
+            <Phone className="w-3.5 h-3.5 text-white" /> +221 78 166 20 09
           </span>
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
-            <MapPin className="w-3.5 h-3.5 text-white" /> VDN, Dakar, Sénégal
+            <MapPin className="w-3.5 h-3.5 text-white" /> Hann Mariste 1,ecole japonaise
           </span>
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
             Horaires : Lun - Sam / 8h00 - 19h00
@@ -148,6 +155,54 @@ export default function PublicLayout() {
             >
               <WhatsAppIcon className="w-5 h-5" />
             </a>
+
+            {/* TikTok Button */}
+            <a
+              href={TIKTOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 text-black/70 hover:text-black hover:scale-110 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-transparent border border-black/5 hover:border-black/20 hover:bg-black/5"
+              aria-label="Suivre sur TikTok"
+              title="Suivre sur TikTok"
+            >
+              <TikTokIcon className="w-5 h-5" />
+            </a>
+
+            {/* Twitter/X Button */}
+            <a
+              href={TWITTER_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 text-black/70 hover:text-black hover:scale-110 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-transparent border border-black/5 hover:border-black/20 hover:bg-black/5"
+              aria-label="Suivre sur Twitter"
+              title="Suivre sur Twitter"
+            >
+              <TwitterIcon className="w-5 h-5" />
+            </a>
+
+            {/* Instagram Button */}
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 text-black/70 hover:text-[#E1306C] hover:scale-110 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-transparent border border-black/5 hover:border-[#E1306C]/20 hover:bg-[#E1306C]/5"
+              aria-label="Suivre sur Instagram"
+              title="Suivre sur Instagram"
+            >
+              <InstagramIcon className="w-5 h-5" />
+            </a>
+
+            {/* LinkedIn Button */}
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 text-black/70 hover:text-[#0077B5] hover:scale-110 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-transparent border border-black/5 hover:border-[#0077B5]/20 hover:bg-[#0077B5]/5"
+              aria-label="Suivre sur LinkedIn"
+              title="Suivre sur LinkedIn"
+            >
+              <LinkedInIcon className="w-5 h-5" />
+            </a>
           </div>
 
           {/* Mobile Menu Icon */}
@@ -171,6 +226,54 @@ export default function PublicLayout() {
               title="Contacter le vendeur sur WhatsApp"
             >
               <WhatsAppIcon className="w-5 h-5" />
+            </a>
+
+            {/* TikTok Mobile Button */}
+            <a
+              href={TIKTOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-black/70 hover:text-black hover:scale-110 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-transparent border border-black/5 hover:border-black/20 hover:bg-black/5"
+              aria-label="Suivre sur TikTok"
+              title="Suivre sur TikTok"
+            >
+              <TikTokIcon className="w-5 h-5" />
+            </a>
+
+            {/* Twitter/X Mobile Button */}
+            <a
+              href={TWITTER_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-black/70 hover:text-black hover:scale-110 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-transparent border border-black/5 hover:border-black/20 hover:bg-black/5"
+              aria-label="Suivre sur Twitter"
+              title="Suivre sur Twitter"
+            >
+              <TwitterIcon className="w-5 h-5" />
+            </a>
+
+            {/* Instagram Mobile Button */}
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-black/70 hover:text-[#E1306C] hover:scale-110 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-transparent border border-black/5 hover:border-[#E1306C]/20 hover:bg-[#E1306C]/5"
+              aria-label="Suivre sur Instagram"
+              title="Suivre sur Instagram"
+            >
+              <InstagramIcon className="w-5 h-5" />
+            </a>
+
+            {/* LinkedIn Mobile Button */}
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-black/70 hover:text-[#0077B5] hover:scale-110 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center rounded-full bg-transparent border border-black/5 hover:border-[#0077B5]/20 hover:bg-[#0077B5]/5"
+              aria-label="Suivre sur LinkedIn"
+              title="Suivre sur LinkedIn"
+            >
+              <LinkedInIcon className="w-5 h-5" />
             </a>
 
             <button 
@@ -220,15 +323,67 @@ export default function PublicLayout() {
                 Première plateforme vitrine d'annonces automobiles premium au Sénégal. Découvrez des véhicules de qualité exposés par nos membres.
               </p>
               <div className="space-y-3 text-sm">
-                <a href="tel:+221338000000" className="flex items-center gap-2 hover:text-white transition-colors">
-                  <Phone className="w-4 h-4 text-white" /> +221 33 800 00 00
+                <a href="tel:+221781662009" className="flex items-center gap-2 hover:text-white transition-colors">
+                  <Phone className="w-4 h-4 text-white" /> +221 78 166 20 09
                 </a>
-                <a href="mailto:info@autoelite.sn" className="flex items-center gap-2 hover:text-white transition-colors">
-                  <Mail className="w-4 h-4 text-white" /> info@autoelite.sn
+                <a href="mailto:niane0211@gmail.com" className="flex items-center gap-2 hover:text-white transition-colors">
+                  <Mail className="w-4 h-4 text-white" /> niane0211@gmail.com
                 </a>
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2 mb-4">
                   <MapPin className="w-4 h-4 text-white" /> VDN, Dakar, Sénégal
                 </span>
+              </div>
+              <div className="flex items-center gap-2.5 mt-6">
+                <a
+                  href={getWhatsAppLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-white/50 hover:text-[#25D366] hover:bg-white/5 border border-white/10 hover:border-[#25D366]/20 rounded-lg transition-all duration-300 flex items-center justify-center"
+                  aria-label="Contacter sur WhatsApp"
+                  title="Contacter sur WhatsApp"
+                >
+                  <WhatsAppIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={TIKTOK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-white/50 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 rounded-lg transition-all duration-300 flex items-center justify-center"
+                  aria-label="Suivre sur TikTok"
+                  title="Suivre sur TikTok"
+                >
+                  <TikTokIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={TWITTER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-white/50 hover:text-white hover:bg-white/5 border border-white/10 hover:border-white/20 rounded-lg transition-all duration-300 flex items-center justify-center"
+                  aria-label="Suivre sur Twitter"
+                  title="Suivre sur Twitter"
+                >
+                  <TwitterIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-white/50 hover:text-[#E1306C] hover:bg-white/5 border border-white/10 hover:border-[#E1306C]/20 rounded-lg transition-all duration-300 flex items-center justify-center"
+                  aria-label="Suivre sur Instagram"
+                  title="Suivre sur Instagram"
+                >
+                  <InstagramIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={LINKEDIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-white/50 hover:text-[#0077B5] hover:bg-white/5 border border-white/10 hover:border-[#0077B5]/20 rounded-lg transition-all duration-300 flex items-center justify-center"
+                  aria-label="Suivre sur LinkedIn"
+                  title="Suivre sur LinkedIn"
+                >
+                  <LinkedInIcon className="w-4 h-4" />
+                </a>
               </div>
             </div>
 

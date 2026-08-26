@@ -49,23 +49,23 @@ export default function Contact() {
             <h3 className="font-bold text-slate-800 text-base">Nos coordonnées</h3>
             
             <div className="space-y-4 text-xs font-semibold">
-              <a href="tel:+221338000000" className="flex items-center gap-3 text-slate-600 hover:text-accent-700 transition-colors">
+              <a href="tel:+221781662009" className="flex items-center gap-3 text-slate-600 hover:text-accent-700 transition-colors">
                 <div className="w-8 h-8 rounded-lg bg-accent-50 text-accent-700 flex items-center justify-center flex-shrink-0">
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
                   <span className="block text-[10px] text-slate-400 font-bold uppercase">Téléphone</span>
-                  +221 33 800 00 00
+                  +221 78 166 20 09
                 </div>
               </a>
 
-              <a href="mailto:contact@autoelite.sn" className="flex items-center gap-3 text-slate-600 hover:text-accent-700 transition-colors">
+              <a href="mailto:niane0211@gmail.com" className="flex items-center gap-3 text-slate-600 hover:text-accent-700 transition-colors">
                 <div className="w-8 h-8 rounded-lg bg-accent-50 text-accent-700 flex items-center justify-center flex-shrink-0">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>
                   <span className="block text-[10px] text-slate-400 font-bold uppercase">Email</span>
-                  contact@autoelite.sn
+                  niane0211@gmail.com
                 </div>
               </a>
 
