@@ -1,4 +1,12 @@
-export const WHATSAPP_SELLER_NUMBER = import.meta.env.VITE_WHATSAPP_SELLER_NUMBER || '221781662009';
+const getValidWhatsAppNumber = (): string => {
+  const envValue = import.meta.env.VITE_WHATSAPP_SELLER_NUMBER;
+  if (envValue && /^\d+$/.test(envValue) && envValue.length >= 9) {
+    return envValue;
+  }
+  return '221781662009';
+};
+
+export const WHATSAPP_SELLER_NUMBER = getValidWhatsAppNumber();
 export const WHATSAPP_DEFAULT_MESSAGE = "Bonjour, je suis intéressé par vos véhicules et j'aimerais avoir plus d'informations.";
 
 /**
