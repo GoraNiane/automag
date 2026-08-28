@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMockStore } from '../store/mockStore';
 import { Phone, Mail, MapPin, Clock, MessageSquare, Send, CheckCircle2 } from 'lucide-react';
+import { WHATSAPP_SELLER_NUMBER, getFormattedPhoneNumber } from '../config/whatsapp';
 
 export default function Contact() {
   const { addContactRequest } = useMockStore();
@@ -49,13 +50,13 @@ export default function Contact() {
             <h3 className="font-bold text-slate-800 text-base">Nos coordonnées</h3>
             
             <div className="space-y-4 text-xs font-semibold">
-              <a href="tel:+221781662009" className="flex items-center gap-3 text-slate-600 hover:text-accent-700 transition-colors">
+              <a href={`tel:${WHATSAPP_SELLER_NUMBER}`} className="flex items-center gap-3 text-slate-600 hover:text-accent-700 transition-colors">
                 <div className="w-8 h-8 rounded-lg bg-accent-50 text-accent-700 flex items-center justify-center flex-shrink-0">
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
                   <span className="block text-[10px] text-slate-400 font-bold uppercase">Téléphone</span>
-                  +221 78 166 20 09
+                  {getFormattedPhoneNumber()}
                 </div>
               </a>
 

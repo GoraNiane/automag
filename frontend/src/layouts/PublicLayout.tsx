@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useMockStore } from '../store/mockStore';
 import WhatsAppIcon from '../components/WhatsAppIcon';
-import { getWhatsAppLink } from '../config/whatsapp';
+import { getWhatsAppLink, WHATSAPP_SELLER_NUMBER, getFormattedPhoneNumber } from '../config/whatsapp';
 import TikTokIcon from '../components/TikTokIcon';
 import TwitterIcon from '../components/TwitterIcon';
 import InstagramIcon from '../components/InstagramIcon';
@@ -73,7 +73,7 @@ export default function PublicLayout() {
       <div className="w-full overflow-hidden bg-black text-white text-xs py-2.5 border-b border-white/10 whitespace-nowrap flex items-center">
         <div className="inline-block animate-ticker">
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
-            <Phone className="w-3.5 h-3.5 text-white" /> +221 78 166 20 09
+            <Phone className="w-3.5 h-3.5 text-white" /> {getFormattedPhoneNumber()}
           </span>
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
             <MapPin className="w-3.5 h-3.5 text-white" /> VDN, Dakar, Sénégal
@@ -87,7 +87,7 @@ export default function PublicLayout() {
         </div>
         <div className="inline-block animate-ticker">
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
-            <Phone className="w-3.5 h-3.5 text-white" /> +221 78 166 20 09
+            <Phone className="w-3.5 h-3.5 text-white" /> {getFormattedPhoneNumber()}
           </span>
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
             <MapPin className="w-3.5 h-3.5 text-white" /> Hann Mariste 1,ecole japonaise
@@ -323,8 +323,8 @@ export default function PublicLayout() {
                 Première plateforme vitrine d'annonces automobiles premium au Sénégal. Découvrez des véhicules de qualité exposés par nos membres.
               </p>
               <div className="space-y-3 text-sm">
-                <a href="tel:+221781662009" className="flex items-center gap-2 hover:text-white transition-colors">
-                  <Phone className="w-4 h-4 text-white" /> +221 78 166 20 09
+                <a href={`tel:${WHATSAPP_SELLER_NUMBER}`} className="flex items-center gap-2 hover:text-white transition-colors">
+                  <Phone className="w-4 h-4 text-white" /> {getFormattedPhoneNumber()}
                 </a>
                 <a href="mailto:niane0211@gmail.com" className="flex items-center gap-2 hover:text-white transition-colors">
                   <Mail className="w-4 h-4 text-white" /> niane0211@gmail.com

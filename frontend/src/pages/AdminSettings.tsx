@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Save, Search, Globe } from 'lucide-react';
+import { getFormattedPhoneNumber } from '../config/whatsapp';
 
 export default function AdminSettings() {
   const [siteName, setSiteName] = useState('AutoElite Sénégal');
-  const [phone, setPhone] = useState('+221 78 166 20 09');
+  const [phone, setPhone] = useState(getFormattedPhoneNumber());
   const [seoTitle, setSeoTitle] = useState('AutoElite | Vitrine d\'Annonces Automobiles Premium au Sénégal');
   const [seoMeta, setSeoMeta] = useState('Découvrez les meilleures annonces de voitures exposées à Dakar, Thiès, Saly et Saint-Louis. Contactez directement les vendeurs.');
   const [success, setSuccess] = useState(false);

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Heart, Share2, MapPin, Calendar, Gauge, Fuel, 
-  Settings, Maximize, Check, Phone, Mail, 
-  MessageSquare, Send, CheckCircle, ChevronLeft, ChevronRight
+  Settings, Maximize, Check, Phone, 
+  MessageSquare, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useMockStore } from '../store/mockStore';
 import { WHATSAPP_SELLER_NUMBER, getWhatsAppLink } from '../config/whatsapp';
@@ -13,7 +13,7 @@ export default function CarDetails() {
   const { id } = useParams<{ id: string }>();
   const { 
     vehicles, listings, favorites, toggleFavorite, 
-    addContactRequest, currentUser, getSellerByListingId 
+    getSellerByListingId 
   } = useMockStore();
 
   const vehicle = vehicles.find(v => v.id === id);
@@ -135,12 +135,7 @@ export default function CarDetails() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeImageIndex, photos]);
 
-  // Form Booking Contact / Message
-  const [name, setName] = useState(currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '');
-  const [email, setEmail] = useState(currentUser?.email || '');
-  const [phone, setPhone] = useState(currentUser?.phone || '');
-  const [message, setMessage] = useState('');
-  const [contactSuccess, setContactSuccess] = useState(false);
+
 
   if (!vehicle) {
     return (
@@ -157,24 +152,7 @@ export default function CarDetails() {
   const listing = listings.find(l => l.vehicleId === vehicle.id);
   const seller = listing ? getSellerByListingId(listing.sellerId) : null;
 
-  const handleContactSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !email || !message) return;
 
-    addContactRequest({
-      name,
-      email,
-      phone,
-      subject: `Intérêt pour ${vehicle.brand} ${vehicle.model}`,
-      message
-    });
-
-    setContactSuccess(true);
-    setMessage('');
-    setTimeout(() => {
-      setContactSuccess(false);
-    }, 5000);
-  };
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -461,72 +439,7 @@ export default function CarDetails() {
             </div>
           </div>
 
-          {/* Contact form */}
-          <div className="bg-white border-2 border-black p-6 rounded-none shadow-none space-y-6">
-            <div className="space-y-1">
-              <h3 className="font-bold text-black text-base">Contacter le Vendeur</h3>
-              <p className="text-xs text-black/60">Envoyez un message pour obtenir plus d'informations.</p>
-            </div>
 
-            {contactSuccess ? (
-              <div className="p-4 bg-black border-2 border-black text-white rounded-none space-y-2 text-center animate-fade-in">
-                <CheckCircle className="w-8 h-8 text-white mx-auto" />
-                <h4 className="font-bold text-sm">Message envoyé !</h4>
-                <p className="text-xs text-white/80">Le vendeur a bien reçu votre demande et vous répondra sous peu.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleContactSubmit} className="space-y-4">
-                <div>
-                  <label className="form-label">Votre nom *</label>
-                  <input 
-                    type="text" 
-                    required 
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="form-input" 
-                  />
-                </div>
-
-                <div>
-                  <label className="form-label">Votre email *</label>
-                  <input 
-                    type="email" 
-                    required 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="form-input" 
-                  />
-                </div>
-
-                <div>
-                  <label className="form-label">Votre téléphone</label>
-                  <input 
-                    type="tel" 
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+221..." 
-                    className="form-input" 
-                  />
-                </div>
-
-                <div>
-                  <label className="form-label">Message *</label>
-                  <textarea 
-                    rows={4} 
-                    required 
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Bonjour, ce véhicule m'intéresse. Est-il toujours disponible ?" 
-                    className="form-input resize-none" 
-                  />
-                </div>
-
-                <button type="submit" className="w-full btn-primary py-2.5 text-xs">
-                  <Send className="w-4 h-4" /> Envoyer mon message
-                </button>
-              </form>
-            )}
-          </div>
         </div>
       </div>
 

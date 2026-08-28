@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { 
   User, Vehicle, Listing, ContactRequest, Notification, ListingStatus 
 } from '../types';
+import { getFormattedPhoneNumber } from '../config/whatsapp';
 
 // Dynamic API URL for deployment
 const getApiUrl = () => {
@@ -50,7 +51,7 @@ const offlineUsers: User[] = [
   {
     id: 'usr-admin',
     email: 'admin@autoelite.sn',
-    phone: '+221 78 166 20 09',
+    phone: getFormattedPhoneNumber(),
     firstName: 'Ibrahima',
     lastName: 'Diallo',
     role: 'ADMIN',
