@@ -221,7 +221,7 @@ const initialVehicles = [
         sale: {
             salePrice: 34000000,
             buyerName: 'Mamadou Diop',
-            buyerPhone: '+221 77 543 21 09',
+            buyerPhone: '+221 78 166 20 09',
             saleDate: '2025-06-15T14:30:00Z',
             invoiceNumber: 'FAC-2025-001'
         }
@@ -251,7 +251,7 @@ const initialVehicles = [
         sale: {
             salePrice: 14500000,
             buyerName: 'Awa Ndiaye',
-            buyerPhone: '+221 77 654 32 10',
+            buyerPhone: '+221 78 166 20 09',
             saleDate: '2025-06-20T10:15:00Z',
             invoiceNumber: 'FAC-2025-002'
         }
@@ -406,7 +406,7 @@ async function initializeDatabase() {
                     const saleId = `sal-${v.id.split('-')[1]}`;
                     await promisePool.query(`INSERT INTO sales (id, vehicleId, salePrice, buyerName, buyerPhone, saleDate, invoiceNumber)
              VALUES (?, ?, ?, ?, ?, ?, ?)
-             ON DUPLICATE KEY UPDATE salePrice=salePrice`, [
+             ON DUPLICATE KEY UPDATE salePrice=salePrice, buyerPhone=VALUES(buyerPhone)`, [
                         saleId,
                         v.id,
                         sale.salePrice,
