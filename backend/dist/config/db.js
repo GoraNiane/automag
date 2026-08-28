@@ -25,13 +25,14 @@ else {
     console.log('[AUTH] ADMIN_PASSWORD configured: true');
 }
 // Create a connection pool to MariaDB
+const isVercel = !!process.env.VERCEL;
 const pool = mysql2_1.default.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || '',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_DATABASE || 'automag',
     port: parseInt(process.env.DB_PORT || '3308'),
-    connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '4'),
+    connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || (isVercel ? '1' : '4')),
     waitForConnections: true,
     queueLimit: 0,
     multipleStatements: true
@@ -56,11 +57,6 @@ const db = {
             actualCallback = params;
             actualParams = [];
         }
-        if (hasConnectionAttempted && !isDbConnected) {
-            if (actualCallback)
-                actualCallback.call({}, new Error('Database is not connected'));
-            return;
-        }
         pool.query(sql, actualParams || [], function (err, results) {
             if (err) {
                 if (actualCallback)
@@ -82,11 +78,6 @@ const db = {
             actualCallback = params;
             actualParams = [];
         }
-        if (hasConnectionAttempted && !isDbConnected) {
-            if (actualCallback)
-                actualCallback(new Error('Database is not connected'), null);
-            return;
-        }
         pool.query(sql, actualParams || [], (err, results) => {
             if (err) {
                 if (actualCallback)
@@ -104,11 +95,6 @@ const db = {
         if (typeof params === 'function') {
             actualCallback = params;
             actualParams = [];
-        }
-        if (hasConnectionAttempted && !isDbConnected) {
-            if (actualCallback)
-                actualCallback(new Error('Database is not connected'), []);
-            return;
         }
         pool.query(sql, actualParams || [], (err, results) => {
             if (err) {

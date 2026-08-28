@@ -54,7 +54,9 @@ db_1.dbInitPromise.then(() => {
         console.log('[AutoElite Server] Running in serverless Vercel environment.');
     }
 }).catch((err) => {
-    console.error('[DB] Database initialization failed. Server shutting down:', err);
-    process.exit(1);
+    console.error('[DB] Database initialization failed:', err);
+    if (!process.env.VERCEL) {
+        process.exit(1);
+    }
 });
 exports.default = app;

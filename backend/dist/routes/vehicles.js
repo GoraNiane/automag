@@ -153,7 +153,7 @@ router.post('/', auth_1.protect, (req, res) => {
           UPDATE vehicles
           SET brand = ?, model = ?, year = ?, price = ?, mileage = ?, fuel = ?, transmission = ?,
               bodyType = ?, color = ?, location = ?, power = ?, description = ?, equipments = ?,
-              images = ?, primaryImage = ?, condition = ?, availability = ?
+              images = ?, primaryImage = ?, \`condition\` = ?, availability = ?
           WHERE id = ?
         `;
                 const paramsUpdate = [
@@ -183,7 +183,7 @@ router.post('/', auth_1.protect, (req, res) => {
         INSERT INTO vehicles (
           id, brand, model, year, price, mileage, fuel, transmission, 
           bodyType, color, location, power, description, equipments, 
-          images, primaryImage, condition, isFeatured, isPromo, availability
+          images, primaryImage, \`condition\`, isFeatured, isPromo, availability
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?)
       `;
             const paramsInsert = [
@@ -237,7 +237,7 @@ router.put('/:id', auth_1.protect, (req, res) => {
         SET brand = ?, model = ?, year = ?, price = ?, mileage = ?, fuel = ?, 
             transmission = ?, bodyType = ?, color = ?, location = ?, power = ?, 
             description = ?, equipments = ?, images = ?, primaryImage = ?, 
-            condition = ?, availability = ?
+            \`condition\` = ?, availability = ?
         WHERE id = ?
       `;
             const params = [
@@ -299,7 +299,7 @@ router.delete('/:id', auth_1.protect, (req, res) => {
     });
 });
 // 6. POST /api/vehicles/:id/images - Upload listing images (to memory + Cloudinary)
-router.post('/:id/images', auth_1.protect, upload.array('photos', 10), (req, res) => {
+router.post('/:id/images', auth_1.protect, upload.array('photos', 7), (req, res) => {
     const { id } = req.params;
     const files = req.files;
     if (!files || files.length === 0) {
@@ -310,8 +310,8 @@ router.post('/:id/images', auth_1.protect, upload.array('photos', 10), (req, res
             return res.status(500).json({ message: 'Erreur de base de données : ' + err.message });
         }
         const proceedWithUpload = async (isNewDraft, existingImages) => {
-            if (existingImages.length + files.length > 10) {
-                return res.status(400).json({ message: 'Nombre maximum de photos (10) dépassé.' });
+            if (existingImages.length + files.length > 7) {
+                return res.status(400).json({ message: 'Nombre maximum de photos (7) dépassé.' });
             }
             const uploadedImages = [];
             try {
@@ -341,7 +341,7 @@ router.post('/:id/images', auth_1.protect, upload.array('photos', 10), (req, res
             const imagesStr = JSON.stringify(newImagesList);
             if (isNewDraft) {
                 // Insert a draft vehicle in SQLite
-                db_1.default.run(`INSERT INTO vehicles (id, brand, model, year, price, mileage, fuel, transmission, bodyType, location, primaryImage, images, condition, availability)
+                db_1.default.run(`INSERT INTO vehicles (id, brand, model, year, price, mileage, fuel, transmission, bodyType, location, primaryImage, images, \`condition\`, availability)
            VALUES (?, '', '', 0, 0, 0, 'Essence', 'Automatique', 'SUV', 'Dakar', ?, ?, 'Neuf', 'Disponible')`, [id, primaryImage, imagesStr], (errInsert) => {
                     if (errInsert) {
                         return res.status(500).json({ message: 'Erreur de création de brouillon : ' + errInsert.message });
