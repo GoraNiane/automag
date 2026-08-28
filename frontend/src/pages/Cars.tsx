@@ -500,7 +500,7 @@ export default function Cars() {
                                   : { backgroundColor: '#eff6ff', color: '#2563eb', borderColor: '#dbeafe' }
                               }
                             >
-                              {vehicle.availability.toUpperCase()}
+                              {vehicle.availability?.toUpperCase() || ''}
                             </span>
                             {vehicle.condition === 'Neuf' && (
                               <span className="bg-black text-white text-[9px] font-bold px-2.5 py-0.5 border border-black uppercase tracking-wider rounded-full">

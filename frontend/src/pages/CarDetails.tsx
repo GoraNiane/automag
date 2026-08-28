@@ -298,7 +298,7 @@ export default function CarDetails() {
                         : { backgroundColor: '#eff6ff', color: '#2563eb', borderColor: '#dbeafe' }
                     }
                   >
-                    {vehicle.availability.toUpperCase()}
+                    {vehicle.availability?.toUpperCase() || ''}
                   </span>
                   <span className="text-xs font-semibold text-slate-400 flex items-center gap-1">
                     📍 {vehicle.location}, Sénégal

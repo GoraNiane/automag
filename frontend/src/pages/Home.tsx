@@ -299,7 +299,7 @@ export default function Home() {
                                   : { backgroundColor: '#eff6ff', color: '#2563eb', borderColor: '#dbeafe' }
                               }
                             >
-                              {vehicle.availability.toUpperCase()}
+                              {vehicle.availability?.toUpperCase() || ''}
                             </span>
                           </div>
                           
