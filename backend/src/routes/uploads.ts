@@ -42,17 +42,31 @@ const upload = multer({
   }
 });
 
-router.post('/', protect, adminOnly, upload.single('photo'), (req: AuthRequest, res: Response) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'Aucun fichier uploadé.' });
-  }
+router.post('/', protect, adminOnly, (req: AuthRequest, res: Response) => {
+  upload.single('photo')(req, res, (err: any) => {
+    if (err) {
+      if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ message: 'L\'image dépasse 10 Mo.' });
+      }
+      return res.status(400).json({ message: err.message || 'Erreur lors du téléversement.' });
+    }
 
-  // Dynamically resolve URL based on current server host (works on local, staging, or production)
-  const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-  res.json({
-    message: 'Image uploadée avec succès.',
-    url: fileUrl,
-    filename: req.file.filename
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'Aucun fichier uploadé.' });
+      }
+
+      // Dynamically resolve URL based on current server host (works on local, staging, or production)
+      const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      res.json({
+        message: 'Image uploadée avec succès.',
+        url: fileUrl,
+        filename: req.file.filename
+      });
+    } catch (routeErr: any) {
+      console.error('[Upload Route Error]', routeErr);
+      res.status(500).json({ message: 'Erreur lors du traitement du fichier.' });
+    }
   });
 });
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useMockStore, API_URL } from '../store/mockStore';
 import { FuelType, TransmissionType, BodyType, AvailabilityType, VehicleImage } from '../types';
 import { 
@@ -123,11 +124,12 @@ export default function AdminNewListing() {
     if (!files || files.length === 0) return;
 
     if (uploadedPhotos.length + files.length > 7) {
-      alert('Vous pouvez ajouter jusqu\'à 7 photos maximum par véhicule.');
+      toast.error('Vous pouvez ajouter jusqu\'à 7 photos maximum par véhicule.');
       return;
     }
 
     setIsUploading(true);
+    const toastId = toast.loading('Téléversement des photos en cours...');
     const formData = new FormData();
 
     try {
@@ -135,7 +137,7 @@ export default function AdminNewListing() {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         if (file.size > 10 * 1024 * 1024) {
-          alert(`Le fichier "${file.name}" est trop lourd (10 Mo maximum).`);
+          toast.error(`Le fichier "${file.name}" est trop lourd (10 Mo maximum).`, { id: toastId });
           setIsUploading(false);
           return;
         }
@@ -156,13 +158,14 @@ export default function AdminNewListing() {
         const data = await res.json();
         setUploadedPhotos(data.imageObjects);
         setPrimaryPhoto(data.primaryImage);
+        toast.success('Photos ajoutées avec succès !', { id: toastId });
       } else {
         const errData = await res.json();
-        alert(errData.message || 'Erreur lors du téléversement.');
+        toast.error(errData.message || 'Erreur lors du téléversement.', { id: toastId });
       }
     } catch (err) {
       console.error(err);
-      alert('Une erreur réseau est survenue lors de l\'upload.');
+      toast.error('Une erreur réseau est survenue lors de l\'upload.', { id: toastId });
     } finally {
       setIsUploading(false);
     }
@@ -181,6 +184,7 @@ export default function AdminNewListing() {
         }
         return next;
       });
+      toast.success('Photo supprimée');
       return;
     }
 
@@ -197,13 +201,14 @@ export default function AdminNewListing() {
         const data = await res.json();
         setUploadedPhotos(data.imageObjects);
         setPrimaryPhoto(data.primaryImage);
+        toast.success('Photo supprimée avec succès.');
       } else {
         const errData = await res.json();
-        alert(errData.message || 'Erreur lors de la suppression.');
+        toast.error(errData.message || 'Erreur lors de la suppression.');
       }
     } catch (err) {
       console.error(err);
-      alert('Erreur lors de la suppression de la photo.');
+      toast.error('Erreur lors de la suppression de la photo.');
     }
   };
 
@@ -211,6 +216,7 @@ export default function AdminNewListing() {
   const handleSetPrimary = async (photo: VehicleImage) => {
     if (!photo.publicId) {
       setPrimaryPhoto(photo.url);
+      toast.success('Photo principale définie.');
       return;
     }
 
@@ -226,13 +232,14 @@ export default function AdminNewListing() {
       if (res.ok) {
         const data = await res.json();
         setPrimaryPhoto(data.primaryImage);
+        toast.success('Photo principale mise à jour !');
       } else {
         const errData = await res.json();
-        alert(errData.message || 'Erreur lors du changement de photo principale.');
+        toast.error(errData.message || 'Erreur lors du changement de photo principale.');
       }
     } catch (err) {
       console.error(err);
-      alert('Erreur de communication avec le serveur.');
+      toast.error('Erreur de communication avec le serveur.');
     }
   };
 
@@ -273,7 +280,7 @@ export default function AdminNewListing() {
         setPrimaryPhoto(data.primaryImage);
       } else {
         const errData = await res.json();
-        alert(errData.message || 'Erreur lors de la réorganisation.');
+        toast.error(errData.message || 'Erreur lors de la réorganisation.');
       }
     } catch (err) {
       console.error(err);

@@ -42,16 +42,30 @@ const upload = (0, multer_1.default)({
         cb(new Error('Format d\'image non supporté (JPG, PNG, WEBP uniquement).'));
     }
 });
-router.post('/', auth_1.protect, auth_1.adminOnly, upload.single('photo'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ message: 'Aucun fichier uploadé.' });
-    }
-    // Dynamically resolve URL based on current server host (works on local, staging, or production)
-    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-    res.json({
-        message: 'Image uploadée avec succès.',
-        url: fileUrl,
-        filename: req.file.filename
+router.post('/', auth_1.protect, auth_1.adminOnly, (req, res) => {
+    upload.single('photo')(req, res, (err) => {
+        if (err) {
+            if (err instanceof multer_1.default.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ message: 'L\'image dépasse 10 Mo.' });
+            }
+            return res.status(400).json({ message: err.message || 'Erreur lors du téléversement.' });
+        }
+        try {
+            if (!req.file) {
+                return res.status(400).json({ message: 'Aucun fichier uploadé.' });
+            }
+            // Dynamically resolve URL based on current server host (works on local, staging, or production)
+            const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+            res.json({
+                message: 'Image uploadée avec succès.',
+                url: fileUrl,
+                filename: req.file.filename
+            });
+        }
+        catch (routeErr) {
+            console.error('[Upload Route Error]', routeErr);
+            res.status(500).json({ message: 'Erreur lors du traitement du fichier.' });
+        }
     });
 });
 exports.default = router;

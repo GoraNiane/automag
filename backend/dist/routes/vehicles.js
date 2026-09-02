@@ -299,96 +299,114 @@ router.delete('/:id', auth_1.protect, (req, res) => {
     });
 });
 // 6. POST /api/vehicles/:id/images - Upload listing images (to memory + Cloudinary)
-router.post('/:id/images', auth_1.protect, upload.array('photos', 7), (req, res) => {
-    const { id } = req.params;
-    const files = req.files;
-    if (!files || files.length === 0) {
-        return res.status(400).json({ message: 'Aucun fichier reçu.' });
-    }
-    db_1.default.get('SELECT * FROM vehicles WHERE id = ?', [id], async (err, vehicle) => {
-        if (err) {
-            return res.status(500).json({ message: 'Erreur de base de données : ' + err.message });
+router.post('/:id/images', auth_1.protect, (req, res) => {
+    upload.array('photos', 7)(req, res, async (multerErr) => {
+        if (multerErr) {
+            if (multerErr instanceof multer_1.default.MulterError && multerErr.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ message: 'Une des photos dépasse 10 Mo.' });
+            }
+            if (multerErr instanceof multer_1.default.MulterError && multerErr.code === 'LIMIT_UNEXPECTED_FILE') {
+                return res.status(400).json({ message: 'Maximum 7 photos autorisées au total.' });
+            }
+            return res.status(400).json({ message: multerErr.message || 'Erreur lors du traitement des images.' });
         }
-        const proceedWithUpload = async (isNewDraft, existingImages) => {
-            if (existingImages.length + files.length > 7) {
-                return res.status(400).json({ message: 'Nombre maximum de photos (7) dépassé.' });
+        try {
+            const { id } = req.params;
+            const files = req.files;
+            if (!files || files.length === 0) {
+                return res.status(400).json({ message: 'Aucun fichier reçu.' });
             }
-            const uploadedImages = [];
-            try {
-                for (const file of files) {
-                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                    // Stream upload to Cloudinary under the automag/vehicles/vehicle_<id> folder
-                    const result = await (0, cloudinary_1.uploadToCloudinary)(file.buffer, {
-                        folder: `automag/vehicles/vehicle_${id}`,
-                        public_id: `photo-${uniqueSuffix}`
-                    });
-                    uploadedImages.push({
-                        id: `img-${uniqueSuffix}`,
-                        url: result.secure_url,
-                        publicId: result.public_id,
-                        order: existingImages.length + uploadedImages.length
-                    });
+            db_1.default.get('SELECT * FROM vehicles WHERE id = ?', [id], async (err, vehicle) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Erreur de base de données : ' + err.message });
                 }
-            }
-            catch (uploadErr) {
-                return res.status(500).json({ message: 'Erreur d\'upload vers Cloudinary : ' + uploadErr.message });
-            }
-            const newImagesList = [...existingImages, ...uploadedImages];
-            let primaryImage = vehicle?.primaryImage || '';
-            if (!primaryImage && newImagesList.length > 0) {
-                primaryImage = newImagesList[0].url;
-            }
-            const imagesStr = JSON.stringify(newImagesList);
-            if (isNewDraft) {
-                // Insert a draft vehicle in SQLite
-                db_1.default.run(`INSERT INTO vehicles (id, brand, model, year, price, mileage, fuel, transmission, bodyType, location, primaryImage, images, \`condition\`, availability)
-           VALUES (?, '', '', 0, 0, 0, 'Essence', 'Automatique', 'SUV', 'Dakar', ?, ?, 'Neuf', 'Disponible')`, [id, primaryImage, imagesStr], (errInsert) => {
-                    if (errInsert) {
-                        return res.status(500).json({ message: 'Erreur de création de brouillon : ' + errInsert.message });
+                const proceedWithUpload = async (isNewDraft, existingImages) => {
+                    if (existingImages.length + files.length > 7) {
+                        return res.status(400).json({ message: 'Nombre maximum de photos (7) dépassé.' });
                     }
-                    const listId = `lst-${Date.now()}`;
-                    db_1.default.run(`INSERT INTO listings (id, vehicleId, sellerId, status, createdAt, views, isPromoted)
-               VALUES (?, ?, ?, 'Brouillon', ?, 0, 0)`, [listId, id, req.user?.id || 'usr-admin', new Date().toISOString()], (errList) => {
-                        if (errList) {
-                            return res.status(500).json({ message: 'Erreur de création d\'annonce : ' + errList.message });
+                    const uploadedImages = [];
+                    try {
+                        for (const file of files) {
+                            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                            // Stream upload to Cloudinary under the automag/vehicles/vehicle_<id> folder
+                            const result = await (0, cloudinary_1.uploadToCloudinary)(file.buffer, {
+                                folder: `automag/vehicles/vehicle_${id}`,
+                                public_id: `photo-${uniqueSuffix}`
+                            });
+                            uploadedImages.push({
+                                id: `img-${uniqueSuffix}`,
+                                url: result.secure_url,
+                                publicId: result.public_id,
+                                order: existingImages.length + uploadedImages.length
+                            });
                         }
-                        res.json({
-                            message: 'Photos téléversées avec succès.',
-                            images: newImagesList.map(img => img.url),
-                            imageObjects: newImagesList,
-                            primaryImage
-                        });
-                    });
-                });
-            }
-            else {
-                // Update existing vehicle in SQLite
-                db_1.default.run(`UPDATE vehicles SET images = ?, primaryImage = ? WHERE id = ?`, [imagesStr, primaryImage, id], (errUpdate) => {
-                    if (errUpdate) {
-                        return res.status(500).json({ message: 'Erreur de mise à jour des photos : ' + errUpdate.message });
                     }
-                    res.json({
-                        message: 'Photos téléversées avec succès.',
-                        images: newImagesList.map(img => img.url),
-                        imageObjects: newImagesList,
-                        primaryImage
-                    });
-                });
-            }
-        };
-        if (!vehicle) {
-            // New vehicle upload process starts. Create draft listing.
-            return proceedWithUpload(true, []);
-        }
-        else {
-            // Verify ownership
-            checkAuthorization(req, id, (authorized, statusCode, authMsg) => {
-                if (!authorized) {
-                    return res.status(statusCode).json({ message: authMsg });
+                    catch (uploadErr) {
+                        console.error('[Cloudinary Upload Failure]', uploadErr);
+                        return res.status(500).json({ message: 'Erreur d\'upload vers Cloudinary : ' + (uploadErr.message || 'Vérifiez la connexion internet') });
+                    }
+                    const newImagesList = [...existingImages, ...uploadedImages];
+                    let primaryImage = vehicle?.primaryImage || '';
+                    if (!primaryImage && newImagesList.length > 0) {
+                        primaryImage = newImagesList[0].url;
+                    }
+                    const imagesStr = JSON.stringify(newImagesList);
+                    if (isNewDraft) {
+                        // Insert a draft vehicle in SQLite/MariaDB
+                        db_1.default.run(`INSERT INTO vehicles (id, brand, model, year, price, mileage, fuel, transmission, bodyType, location, primaryImage, images, \`condition\`, availability)
+               VALUES (?, '', '', 0, 0, 0, 'Essence', 'Automatique', 'SUV', 'Dakar', ?, ?, 'Neuf', 'Disponible')`, [id, primaryImage, imagesStr], (errInsert) => {
+                            if (errInsert) {
+                                return res.status(500).json({ message: 'Erreur de création de brouillon : ' + errInsert.message });
+                            }
+                            const listId = `lst-${Date.now()}`;
+                            db_1.default.run(`INSERT INTO listings (id, vehicleId, sellerId, status, createdAt, views, isPromoted)
+                   VALUES (?, ?, ?, 'Brouillon', ?, 0, 0)`, [listId, id, req.user?.id || 'usr-admin', new Date().toISOString()], (errList) => {
+                                if (errList) {
+                                    return res.status(500).json({ message: 'Erreur de création d\'annonce : ' + errList.message });
+                                }
+                                res.json({
+                                    message: 'Photos téléversées avec succès.',
+                                    images: newImagesList.map(img => img.url),
+                                    imageObjects: newImagesList,
+                                    primaryImage
+                                });
+                            });
+                        });
+                    }
+                    else {
+                        // Update existing vehicle
+                        db_1.default.run(`UPDATE vehicles SET images = ?, primaryImage = ? WHERE id = ?`, [imagesStr, primaryImage, id], (errUpdate) => {
+                            if (errUpdate) {
+                                return res.status(500).json({ message: 'Erreur de mise à jour des photos : ' + errUpdate.message });
+                            }
+                            res.json({
+                                message: 'Photos téléversées avec succès.',
+                                images: newImagesList.map(img => img.url),
+                                imageObjects: newImagesList,
+                                primaryImage
+                            });
+                        });
+                    }
+                };
+                if (!vehicle) {
+                    // New vehicle upload process starts. Create draft listing.
+                    return proceedWithUpload(true, []);
                 }
-                const existingImages = parseImages(vehicle.images);
-                proceedWithUpload(false, existingImages);
+                else {
+                    // Verify ownership
+                    checkAuthorization(req, id, (authorized, statusCode, authMsg) => {
+                        if (!authorized) {
+                            return res.status(statusCode).json({ message: authMsg });
+                        }
+                        const existingImages = parseImages(vehicle.images);
+                        proceedWithUpload(false, existingImages);
+                    });
+                }
             });
+        }
+        catch (handlerErr) {
+            console.error('[Vehicle Image Upload Handler Error]', handlerErr);
+            res.status(500).json({ message: 'Erreur interne lors du traitement des photos.' });
         }
     });
 });

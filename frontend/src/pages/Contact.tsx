@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useMockStore } from '../store/mockStore';
 import { Phone, Mail, MapPin, Clock, MessageSquare, Send, CheckCircle2 } from 'lucide-react';
 import { WHATSAPP_SELLER_NUMBER, getFormattedPhoneNumber } from '../config/whatsapp';
@@ -13,25 +14,30 @@ export default function Contact() {
   const [message, setMessage] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !message) return;
 
-    addContactRequest({
-      name,
-      email,
-      phone,
-      subject: subject || 'Demande générale',
-      message
-    });
+    try {
+      await addContactRequest({
+        name,
+        email,
+        phone,
+        subject: subject || 'Demande générale',
+        message
+      });
 
-    setSuccess(true);
-    setName('');
-    setEmail('');
-    setPhone('');
-    setSubject('');
-    setMessage('');
-    setTimeout(() => setSuccess(false), 5000);
+      setSuccess(true);
+      toast.success('Votre message a bien été envoyé ! Nous vous répondrons dans les plus brefs délais.');
+      setName('');
+      setEmail('');
+      setPhone('');
+      setSubject('');
+      setMessage('');
+      setTimeout(() => setSuccess(false), 5000);
+    } catch (e) {
+      toast.error('Erreur lors de l\'envoi du message.');
+    }
   };
 
   return (

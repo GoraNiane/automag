@@ -1,4 +1,5 @@
 import React from 'react';
+import toast from 'react-hot-toast';
 import { useMockStore } from '../store/mockStore';
 import { Trash2, Eye, MapPin, Pencil } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -6,11 +7,16 @@ import { Link } from 'react-router-dom';
 export default function AdminVehicles() {
   const { vehicles, listings, deleteListing } = useMockStore();
 
-  const handleDelete = (vehicleId: string) => {
+  const handleDelete = async (vehicleId: string) => {
     const listing = listings.find(l => l.vehicleId === vehicleId);
     if (listing) {
       if (confirm('Voulez-vous vraiment supprimer ce véhicule et son annonce du système ?')) {
-        deleteListing(listing.id);
+        try {
+          await deleteListing(listing.id);
+          toast.success('Véhicule supprimé avec succès.');
+        } catch (e) {
+          toast.error('Erreur lors de la suppression.');
+        }
       }
     }
   };

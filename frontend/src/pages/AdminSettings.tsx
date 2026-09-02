@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Save, Search, Globe } from 'lucide-react';
 import { getFormattedPhoneNumber } from '../config/whatsapp';
 
@@ -12,6 +13,7 @@ export default function AdminSettings() {
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     setSuccess(true);
+    toast.success('Paramètres enregistrés avec succès !');
     setTimeout(() => setSuccess(false), 4000);
   };
 

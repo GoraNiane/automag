@@ -20,17 +20,30 @@ cloudinary_1.v2.config({
  */
 function uploadToCloudinary(fileBuffer, options) {
     return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary_1.v2.uploader.upload_stream(options, (error, result) => {
-            if (error) {
-                console.error('[Cloudinary Upload Error]', error);
-                return reject(error);
-            }
-            if (!result) {
-                return reject(new Error('Cloudinary upload returned undefined result.'));
-            }
-            resolve(result);
-        });
-        uploadStream.end(fileBuffer);
+        if (!fileBuffer || !Buffer.isBuffer(fileBuffer) || fileBuffer.length === 0) {
+            return reject(new Error('Buffer de fichier invalide ou vide.'));
+        }
+        try {
+            const uploadStream = cloudinary_1.v2.uploader.upload_stream(options, (error, result) => {
+                if (error) {
+                    console.error('[Cloudinary Upload Error]', error);
+                    return reject(error);
+                }
+                if (!result) {
+                    return reject(new Error('Cloudinary upload returned undefined result.'));
+                }
+                resolve(result);
+            });
+            uploadStream.on('error', (err) => {
+                console.error('[Cloudinary Stream Error]', err);
+                reject(err);
+            });
+            uploadStream.end(fileBuffer);
+        }
+        catch (err) {
+            console.error('[Cloudinary Exception]', err);
+            reject(err);
+        }
     });
 }
 /**
@@ -38,13 +51,22 @@ function uploadToCloudinary(fileBuffer, options) {
  */
 function deleteFromCloudinary(publicId) {
     return new Promise((resolve, reject) => {
-        cloudinary_1.v2.uploader.destroy(publicId, (error, result) => {
-            if (error) {
-                console.error('[Cloudinary Delete Error]', error);
-                return reject(error);
-            }
-            resolve(result);
-        });
+        if (!publicId) {
+            return resolve({ result: 'not_found' });
+        }
+        try {
+            cloudinary_1.v2.uploader.destroy(publicId, (error, result) => {
+                if (error) {
+                    console.error('[Cloudinary Delete Error]', error);
+                    return reject(error);
+                }
+                resolve(result);
+            });
+        }
+        catch (err) {
+            console.error('[Cloudinary Destroy Exception]', err);
+            reject(err);
+        }
     });
 }
 exports.default = cloudinary_1.v2;
