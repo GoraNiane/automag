@@ -24,6 +24,9 @@ const AdminVehicles = lazy(() => import('./pages/AdminVehicles'));
 const AdminNewListing = lazy(() => import('./pages/AdminNewListing'));
 const AdminSettings = lazy(() => import('./pages/AdminSettings'));
 
+import SplashScreen from './components/SplashScreen';
+import { PWAInstallBanner } from './components/PWAInstallBanner';
+import { OfflineIndicator } from './components/OfflineIndicator';
 import { useMockStore } from './store/mockStore';
 
 function PageLoader() {
@@ -36,13 +39,20 @@ function PageLoader() {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = React.useState(true);
   const { fetchCatalog } = useMockStore();
+
   React.useEffect(() => {
     fetchCatalog();
   }, [fetchCatalog]);
 
   return (
     <>
+      <OfflineIndicator />
+      <PWAInstallBanner />
+      {showSplash && (
+        <SplashScreen onComplete={() => setShowSplash(false)} />
+      )}
       <Toaster 
         position="top-right" 
         toastOptions={{

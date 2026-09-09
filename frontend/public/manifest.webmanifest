@@ -1,0 +1,71 @@
+{
+  "name": "AutoElite Sénégal - Véhicules Premium & Garantis",
+  "short_name": "AutoElite",
+  "description": "Plateforme automobile premium au Sénégal. Achat, vente, reprise et financement de véhicules inspectés et garantis à Dakar, Thiès et Saly.",
+  "id": "/?source=pwa",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#0B0F19",
+  "theme_color": "#0B0F19",
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "orientation": "any",
+  "categories": ["automotive", "shopping", "business"],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Catalogue Véhicules",
+      "short_name": "Catalogue",
+      "description": "Consulter le stock des véhicules certifiés disponibles",
+      "url": "/cars",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Contact & Showroom",
+      "short_name": "Contact",
+      "description": "Joindre nos conseillers ou visiter notre showroom",
+      "url": "/contact",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Espace Administration",
+      "short_name": "Admin",
+      "description": "Accéder au tableau de bord administrateur",
+      "url": "/admin",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

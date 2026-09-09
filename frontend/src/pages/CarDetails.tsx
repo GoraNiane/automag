@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
-  Heart, Share2, MapPin, Calendar, Gauge, Fuel, 
-  Settings, Maximize, Check, Phone, 
+  Heart, Share2, Calendar, Gauge, Fuel, 
+  Settings, Maximize, Phone, 
   MessageSquare, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useMockStore } from '../store/mockStore';
@@ -12,8 +12,7 @@ import { EQUIPMENTS_BY_CATEGORY } from '../config/equipments';
 export default function CarDetails() {
   const { id } = useParams<{ id: string }>();
   const { 
-    vehicles, listings, favorites, toggleFavorite, 
-    getSellerByListingId 
+    vehicles, favorites, toggleFavorite
   } = useMockStore();
 
   const vehicle = vehicles.find(v => v.id === id);
@@ -54,19 +53,21 @@ export default function CarDetails() {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const placeholderImage = 'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&q=80&w=800';
-  const photos = vehicle?.images && vehicle?.images.length > 0 
-    ? vehicle.images 
-    : [vehicle?.primaryImage || placeholderImage];
+  const photos = React.useMemo(() => {
+    return vehicle?.images && vehicle?.images.length > 0 
+      ? vehicle.images 
+      : [vehicle?.primaryImage || placeholderImage];
+  }, [vehicle?.images, vehicle?.primaryImage]);
 
-  const handleNextImage = () => {
+  const handleNextImage = React.useCallback(() => {
     setIsZoomed(false);
     setActiveImageIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
-  };
+  }, [photos.length]);
 
-  const handlePrevImage = () => {
+  const handlePrevImage = React.useCallback(() => {
     setIsZoomed(false);
     setActiveImageIndex((prev) => (prev === 0 ? photos.length - 1 : prev - 1));
-  };
+  }, [photos.length]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isZoomed) return;
@@ -133,9 +134,7 @@ export default function CarDetails() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeImageIndex, photos]);
-
-
+  }, [photos.length, handleNextImage, handlePrevImage]);
 
   if (!vehicle) {
     return (
@@ -147,10 +146,6 @@ export default function CarDetails() {
       </div>
     );
   }
-
-  // Get listing detail for views/seller
-  const listing = listings.find(l => l.vehicleId === vehicle.id);
-  const seller = listing ? getSellerByListingId(listing.sellerId) : null;
 
 
 

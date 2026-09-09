@@ -1,6 +1,5 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { FileText, Shield, Sparkles } from 'lucide-react';
 
 export default function Legals() {
   const { pathname } = useLocation();

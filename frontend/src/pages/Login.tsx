@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useMockStore } from '../store/mockStore';
-import { LogIn, Key, Mail, ShieldAlert, Shield } from 'lucide-react';
+import { LogIn, Key, ShieldAlert, Shield } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { login } = useMockStore();
 
-  const [email, setEmail] = useState('admin@autoelite.sn');
+  const email = 'admin@autoelite.sn';
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {

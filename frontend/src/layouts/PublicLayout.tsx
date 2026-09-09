@@ -4,6 +4,7 @@ import {
   Car, Heart, Menu, X, 
   MapPin, Phone, Mail, ChevronRight
 } from 'lucide-react';
+import PassatLogo from '../components/PassatLogo';
 import { useMockStore } from '../store/mockStore';
 import WhatsAppIcon from '../components/WhatsAppIcon';
 import { getWhatsAppLink, WHATSAPP_SELLER_NUMBER, getFormattedPhoneNumber } from '../config/whatsapp';
@@ -107,10 +108,10 @@ export default function PublicLayout() {
           {/* Logo */}
           <div 
             onClick={handleLogoClick} 
-            className={`flex items-center gap-2 group cursor-pointer transition-transform ${isWiggling ? 'animate-logo-tilt' : ''}`}
+            className="flex items-center gap-2.5 group cursor-pointer"
           >
-            <div className="p-2 bg-black rounded-lg transition-colors duration-300 border border-black group-hover:bg-white group-hover:text-black">
-              <Car className="w-6 h-6 text-white group-hover:text-black" />
+            <div className="p-1.5 bg-black rounded-lg border border-black flex items-center justify-center">
+              <PassatLogo size={36} />
             </div>
             <div>
               <span className="text-xl font-display font-bold tracking-tight text-black">
@@ -311,9 +312,9 @@ export default function PublicLayout() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             {/* Column 1: Brand */}
             <div>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="p-2 bg-white rounded-lg">
-                  <Car className="w-6 h-6 text-black" />
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="p-1.5 bg-black rounded-lg border border-white/20 flex items-center justify-center">
+                  <PassatLogo size={36} />
                 </div>
                 <span className="text-xl font-display font-bold tracking-tight text-white">
                   NBKF AUTO<span className="font-light text-white/70">ELITE</span>
@@ -470,9 +471,14 @@ export default function PublicLayout() {
             </div>
           </div>
 
-          <div className="border-t border-white/10 mt-16 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
+          <div className="border-t border-white/10 mt-16 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-white/60">
             <p>&copy; {new Date().getFullYear()} AutoElite Sénégal. Tous droits réservés.</p>
-            <p>Conçu pour le marché sénégalais & ouest-africain.</p>
+            <p className="flex items-center gap-1.5">
+              <span>Réalisé par</span>
+              <span className="font-extrabold text-white tracking-wider px-2 py-0.5 bg-white/10 rounded-md border border-white/10">
+                GoraTech
+              </span>
+            </p>
           </div>
         </div>
       </footer>

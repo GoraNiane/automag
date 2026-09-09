@@ -1,11 +1,9 @@
 import React from 'react';
 import { useMockStore } from '../store/mockStore';
-import { User, ShieldAlert, Key } from 'lucide-react';
-
 export default function AdminUsers() {
   const { users, currentUser } = useMockStore();
 
-  const handleRoleChange = (userId: string, currentRole: string) => {
+  const handleRoleChange = (_userId: string, _currentRole: string) => {
     // Simply display role change instruction or simulate changing
     alert('Simulation : Rôle utilisateur modifié avec succès ! (Dans un environnement réel, cela envoie un appel API PUT/PATCH)');
   };

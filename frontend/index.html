@@ -2,12 +2,44 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://images.unsplash.com/photo-1617531653332-bd46c24f2068?auto=format&fit=crop&q=80&w=32" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="AutoElite - Plateforme automobile premium au Sénégal. Achat, vente, reprise et financement de véhicules inspectés et garantis à Dakar, Thiès, Saly." />
-    <title>AutoElite | Qualité. Fiabilité. Confiance. - Sénégal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    
+    <!-- Title & SEO Meta -->
+    <title>AutoElite Sénégal | Véhicules Premium & Garantis</title>
+    <meta name="description" content="AutoElite - Plateforme automobile premium au Sénégal. Achat, vente, reprise et financement de véhicules inspectés et garantis à Dakar, Thiès et Saly." />
+    <meta name="keywords" content="voiture dakar, achat voiture sénégal, vente automobile dakar, autoelite, véhicules garantis dakar, reprise auto sénégal" />
+    <meta name="author" content="AutoElite Sénégal" />
+
+    <!-- PWA & Theme Color -->
+    <meta name="theme-color" content="#0B0F19" />
+    <meta name="background-color" content="#0B0F19" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- iOS PWA Optimizations -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="AutoElite" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+
+    <!-- Standard Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+
+    <!-- OpenGraph & Social Cards -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="AutoElite Sénégal | Véhicules Premium & Garantis" />
+    <meta property="og:description" content="Découvrez notre sélection exclusive de véhicules rigoureusement inspectés et garantis à Dakar." />
+    <meta property="og:image" content="/icons/icon-512x512.png" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AutoElite Sénégal | Véhicules Premium" />
+    <meta name="twitter:description" content="Achat, vente, reprise et financement de véhicules inspectés et certifiés à Dakar." />
+    <meta name="twitter:image" content="/icons/icon-512x512.png" />
   </head>
-  <body>
+  <body className="bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-black">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

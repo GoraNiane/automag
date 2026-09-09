@@ -134,7 +134,7 @@ export const useMockStore = create<StoreState>()(
             set({ vehicles, listings });
             console.log('[AutoElite Sync] Loaded catalog from database.');
           }
-        } catch (err) {
+        } catch {
           console.warn('[AutoElite Sync] Backend is offline. Running in fallback offline mode.');
         }
       },
@@ -156,10 +156,10 @@ export const useMockStore = create<StoreState>()(
             return true;
           }
           return false;
-        } catch (err) {
-          console.warn('[AutoElite Sync] Offline login fallback used.');
-          // Offline fallback
-          if (email.toLowerCase() === 'admin@autoelite.sn') {
+        } catch {
+          console.warn('[AutoElite Sync] Backend is unreachable.');
+          // Offline fallback only in local development
+          if (import.meta.env.DEV && email.toLowerCase() === 'admin@autoelite.sn') {
             set({ currentUser: offlineUsers[0] });
             return true;
           }

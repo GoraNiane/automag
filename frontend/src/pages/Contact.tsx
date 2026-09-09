@@ -35,7 +35,7 @@ export default function Contact() {
       setSubject('');
       setMessage('');
       setTimeout(() => setSuccess(false), 5000);
-    } catch (e) {
+    } catch {
       toast.error('Erreur lors de l\'envoi du message.');
     }
   };

@@ -5,7 +5,7 @@
  * - Quality: 0.85
  */
 export function compressImage(file: File): Promise<Blob> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // If the file is not an image, resolve with original file blob
     if (!file.type.startsWith('image/')) {
       return resolve(file);

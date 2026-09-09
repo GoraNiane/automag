@@ -6,15 +6,22 @@ dotenv.config();
 
 // Verify environment variables on startup (with graceful fallbacks)
 if (!process.env.JWT_SECRET) {
-  console.warn('[AUTH WARNING] JWT_SECRET is not configured in .env. Using auto-generated runtime fallback.');
-  process.env.JWT_SECRET = 'autoelite_fallback_secret_jwt_key_' + Math.random().toString(36).substring(2);
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    console.error('[AUTH ERROR] JWT_SECRET must be configured in environment variables.');
+  } else {
+    console.warn('[AUTH WARNING] JWT_SECRET is not configured in .env. Using fallback key for local development.');
+    process.env.JWT_SECRET = 'autoelite_dev_fallback_secret_key_2026';
+  }
 } else {
   console.log('[AUTH] JWT_SECRET configured: true');
 }
 
 if (!process.env.ADMIN_PASSWORD) {
-  console.warn('[AUTH WARNING] ADMIN_PASSWORD is not configured in .env. Defaulting to Goraniane2004.');
-  process.env.ADMIN_PASSWORD = 'Goraniane2004';
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    console.error('[AUTH ERROR] ADMIN_PASSWORD must be configured in environment variables.');
+  } else {
+    console.warn('[AUTH WARNING] ADMIN_PASSWORD is not configured in .env.');
+  }
 } else {
   console.log('[AUTH] ADMIN_PASSWORD configured: true');
 }

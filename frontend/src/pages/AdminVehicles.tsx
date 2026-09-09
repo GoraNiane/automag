@@ -14,7 +14,7 @@ export default function AdminVehicles() {
         try {
           await deleteListing(listing.id);
           toast.success('Véhicule supprimé avec succès.');
-        } catch (e) {
+        } catch {
           toast.error('Erreur lors de la suppression.');
         }
       }

@@ -1,5 +1,19 @@
+import fs from 'fs';
+import path from 'path';
+import sharp from 'sharp';
 
-<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+const outputDir = path.resolve('public/icons');
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+
+// Ultra-luxurious AutoElite SVG Icon with gold emblem, aerodynamic car silhouette, and sleek dark obsidian background
+const createSvg = (size: number, isMaskable: boolean = false) => {
+  const padding = isMaskable ? size * 0.15 : size * 0.08;
+  const contentSize = size - padding * 2;
+  
+  return `
+<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <!-- Background Gradients -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -29,25 +43,25 @@
     </radialGradient>
 
     <filter id="luxuryShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="7.68" stdDeviation="10.24" flood-color="#000" flood-opacity="0.6"/>
+      <feDropShadow dx="0" dy="${size * 0.015}" stdDeviation="${size * 0.02}" flood-color="#000" flood-opacity="0.6"/>
     </filter>
 
     <filter id="goldShine" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4.096" stdDeviation="5.12" flood-color="#F59E0B" flood-opacity="0.5"/>
+      <feDropShadow dx="0" dy="${size * 0.008}" stdDeviation="${size * 0.01}" flood-color="#F59E0B" flood-opacity="0.5"/>
     </filter>
   </defs>
 
   <!-- Background Base -->
-  <rect width="512" height="512" rx="112.64" fill="url(#bgGrad)" />
+  <rect width="${size}" height="${size}" rx="${isMaskable ? 0 : size * 0.22}" fill="url(#bgGrad)" />
   
   <!-- Subtle Outer Rim / Border for app feel -->
-  <rect x="5.12" y="5.12" width="501.76" height="501.76" rx="107.52" fill="none" stroke="url(#goldGrad)" stroke-width="7.68" stroke-opacity="0.4" />
+  ${!isMaskable ? `<rect x="${size * 0.01}" y="${size * 0.01}" width="${size * 0.98}" height="${size * 0.98}" rx="${size * 0.21}" fill="none" stroke="url(#goldGrad)" stroke-width="${size * 0.015}" stroke-opacity="0.4" />` : ''}
 
   <!-- Radial Glow Behind Emblem -->
-  <circle cx="256" cy="256" r="204.8" fill="url(#goldGlow)" />
+  <circle cx="${size / 2}" cy="${size / 2}" r="${size * 0.4}" fill="url(#goldGlow)" />
 
   <!-- Center Group containing the AutoElite Luxury Badge -->
-  <g transform="translate(256, 256) scale(0.8601599999999999)" filter="url(#luxuryShadow)">
+  <g transform="translate(${size / 2}, ${size / 2}) scale(${contentSize / 500})" filter="url(#luxuryShadow)">
     
     <!-- Outer Shield / Diamond Frame -->
     <path d="M 0,-170 L 150,-50 L 120,110 L 0,180 L -120,110 L -150,-50 Z" 
@@ -108,3 +122,48 @@
     <text x="0" y="119" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="800" fill="#FDE68A" text-anchor="middle" letter-spacing="3">AUTOELITE</text>
   </g>
 </svg>
+`;
+};
+
+async function generateIcons() {
+  console.log('Generating PWA and App Icons...');
+
+  const iconSizes = [
+    { name: 'icon-192x192.png', size: 192, maskable: false },
+    { name: 'icon-512x512.png', size: 512, maskable: false },
+    { name: 'icon-maskable-192x192.png', size: 192, maskable: true },
+    { name: 'icon-maskable-512x512.png', size: 512, maskable: true },
+    { name: 'apple-touch-icon.png', size: 180, maskable: false },
+    { name: 'favicon-32x32.png', size: 32, maskable: false },
+    { name: 'favicon-16x16.png', size: 16, maskable: false },
+  ];
+
+  for (const { name, size, maskable } of iconSizes) {
+    const svg = createSvg(size, maskable);
+    const destPath = path.join(outputDir, name);
+    await sharp(Buffer.from(svg))
+      .resize(size, size)
+      .png({ quality: 100, compressionLevel: 9 })
+      .toFile(destPath);
+    console.log(`Generated: ${name} (${size}x${size})`);
+
+    // Also copy 192, 512 and apple-touch-icon to public root for immediate direct access
+    if (['icon-192x192.png', 'icon-512x512.png', 'apple-touch-icon.png'].includes(name)) {
+      const rootDest = path.resolve('public', name);
+      fs.copyFileSync(destPath, rootDest);
+    }
+  }
+
+  // Generate SVG icon in public/icons/icon.svg and public/favicon.svg
+  const masterSvg = createSvg(512, false);
+  fs.writeFileSync(path.join(outputDir, 'icon.svg'), masterSvg);
+  fs.writeFileSync(path.resolve('public/favicon.svg'), masterSvg);
+  console.log('Generated: icon.svg and updated favicon.svg');
+
+  console.log('Icon generation completed successfully!');
+}
+
+generateIcons().catch(err => {
+  console.error('Error generating icons:', err);
+  process.exit(1);
+});

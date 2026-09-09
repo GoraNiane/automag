@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { 
-  Search, ChevronRight, Heart,
-  Car, CheckCircle2
+  Search, ChevronRight, Heart, CheckCircle2
 } from 'lucide-react';
 import { useMockStore } from '../store/mockStore';
 import { motion } from 'framer-motion';
+import heroBanner from '../assets/hero-banner.jpg';
 
 const STOCK_GROUPS = [
   { name: 'Disponible immédiatement', value: 'Disponible', icon: '📍', description: 'En stock physique dans notre showroom à Dakar, prêts pour livraison immédiate.', image: 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?auto=format&fit=crop&q=80&w=400' },
@@ -15,7 +15,7 @@ const STOCK_GROUPS = [
 
 export default function Home() {
   const navigate = useNavigate();
-  const { vehicles, listings, favorites, toggleFavorite, currentUser } = useMockStore();
+  const { vehicles, listings, favorites, toggleFavorite } = useMockStore();
 
   // Search form state
   const [brand, setBrand] = useState('');
@@ -23,14 +23,17 @@ export default function Home() {
   const [maxPrice, setMaxPrice] = useState('');
   const [year, setYear] = useState('');
 
+  // Extract unique brands from vehicles
+  const uniqueBrands = Array.from(new Set(vehicles.map(v => v.brand))).sort();
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (brand) params.append('brand', brand);
-    if (model) params.append('model', model);
-    if (maxPrice) params.append('maxPrice', maxPrice);
-    if (year) params.append('year', year);
-    navigate(`/recherche?${params.toString()}`);
+    if (brand) params.set('brand', brand);
+    if (model) params.set('model', model);
+    if (maxPrice) params.set('maxPrice', maxPrice);
+    if (year) params.set('yearMin', year);
+    navigate(`/voitures?${params.toString()}`);
   };
 
   // Get active listings that are published
@@ -38,9 +41,6 @@ export default function Home() {
   const featuredVehicles = vehicles
     .filter(v => publishedListings.some(l => l.vehicleId === v.id) && v.isFeatured)
     .slice(0, 4);
-
-  // Extract unique brands for dropdown list
-  const uniqueBrands = Array.from(new Set(vehicles.map(v => v.brand)));
 
   const getCountForGroup = (availability: string) => {
     return vehicles.filter(v => v.availability === availability).length;
@@ -52,11 +52,10 @@ export default function Home() {
       <section className="relative pt-20 pb-12 md:pt-28 md:pb-16 lg:pt-36 lg:pb-52 overflow-visible">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img 
-            src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&q=80&w=1920" 
-            alt="Premium sports sedan background" 
-            className="w-full h-full object-cover brightness-[0.35]" 
+            src={heroBanner} 
+            alt="Véhicules d'occasion Auto-Mag" 
+            className="w-full h-full object-cover object-center" 
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white">
@@ -75,7 +74,7 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-5xl md:text-6xl font-display font-extrabold tracking-tight leading-[1.1]"
             >
-              Découvrez nos véhicules <span className="text-white font-light italic">d'exception</span>
+              Découvrez nos véhicules <span className="text-white font-light italic">d'occasion</span>
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}

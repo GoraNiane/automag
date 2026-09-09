@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
 import { 
-  Shield, Car, FileText, Users, 
+  Shield, Car, 
   Settings, LogOut, ChevronLeft, LayoutDashboard, PlusCircle
 } from 'lucide-react';
 import { useMockStore } from '../store/mockStore';

@@ -169,6 +169,85 @@
     75% { transform: rotate(-4deg); }
     90% { transform: rotate(2deg); }
   }
+
+  @keyframes headlightOn {
+    0% {
+      opacity: 0;
+      filter: brightness(0.2);
+      box-shadow: 0 0 0px rgba(255, 255, 255, 0);
+    }
+    100% {
+      opacity: 1;
+      filter: brightness(1);
+      box-shadow: 0 0 3px rgba(255, 255, 255, 0.8), 0 0 8px rgba(255, 255, 255, 0.35);
+    }
+  }
+
+  @keyframes headlightPulse {
+    0%, 88.5%, 100% {
+      opacity: 1;
+      filter: brightness(1);
+      box-shadow: 0 0 3px rgba(255, 255, 255, 0.8), 0 0 8px rgba(255, 255, 255, 0.35);
+    }
+    94.2% {
+      opacity: 0.90;
+      filter: brightness(0.90);
+      box-shadow: 0 0 2.5px rgba(255, 255, 255, 0.72), 0 0 6.5px rgba(255, 255, 255, 0.28);
+    }
+  }
+
+  @keyframes reflectionOn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0.35;
+    }
+  }
+
+  @keyframes reflectionPulse {
+    0%, 88.5%, 100% {
+      opacity: 0.35;
+    }
+    94.2% {
+      opacity: 0.28;
+    }
+  }
+}
+
+/* Headlights for 2012 Volkswagen Passat Logo */
+.headlight-left {
+  position: absolute;
+  opacity: 0;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 255, 255, 0.96) 45%, rgba(255, 255, 255, 0.4) 80%, rgba(255, 255, 255, 0) 100%);
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.8), 0 0 8px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  animation:
+    headlightOn 450ms ease-out 700ms forwards,
+    headlightPulse 7s ease-in-out 7s infinite;
+}
+
+.headlight-right {
+  position: absolute;
+  opacity: 0;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 255, 255, 0.96) 45%, rgba(255, 255, 255, 0.4) 80%, rgba(255, 255, 255, 0) 100%);
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.8), 0 0 8px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  animation:
+    headlightOn 450ms ease-out 820ms forwards,
+    headlightPulse 7s ease-in-out 7s infinite;
+}
+
+.headlight-reflection {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 80%);
+  animation:
+    reflectionOn 450ms ease-out 820ms forwards,
+    reflectionPulse 7s ease-in-out 7s infinite;
 }
 
 /* Custom Base Rules */

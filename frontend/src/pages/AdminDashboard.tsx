@@ -1,14 +1,12 @@
 import React from 'react';
 import { useMockStore } from '../store/mockStore';
 import { 
-  Car, Anchor, Clock, ArrowUpRight, FileText
+  Car, Anchor, Clock, ArrowUpRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function AdminDashboard() {
-  const { 
-    listings, vehicles, updateListingStatus 
-  } = useMockStore();
+  const { vehicles } = useMockStore();
 
   const totalListings = vehicles.length;
   const inStockCount = vehicles.filter(v => v.availability === 'Disponible').length;

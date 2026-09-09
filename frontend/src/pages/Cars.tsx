@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { 
-  Filter, Grid, SlidersHorizontal, Heart, MapPin, 
+  Filter, SlidersHorizontal, Heart, 
   RefreshCw, ChevronLeft, ChevronRight, X 
 } from 'lucide-react';
 import { useMockStore } from '../store/mockStore';

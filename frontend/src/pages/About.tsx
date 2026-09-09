@@ -1,5 +1,4 @@
 import React from 'react';
-import { Award, Compass, Heart, ShieldCheck } from 'lucide-react';
 
 export default function About() {
   return (

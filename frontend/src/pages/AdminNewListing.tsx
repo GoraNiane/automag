@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate, Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useMockStore, API_URL } from '../store/mockStore';
 import { FuelType, TransmissionType, BodyType, AvailabilityType, VehicleImage } from '../types';
 import { 
-  ChevronRight, ChevronLeft, Check, CheckCircle2, 
-  UploadCloud, Star, Trash2, Camera, Image as ImageIcon, ArrowLeft, ArrowRight, Loader2
+  ChevronRight, ChevronLeft, CheckCircle2, 
+  Star, Trash2, Camera, Image as ImageIcon, ArrowLeft, ArrowRight, Loader2
 } from 'lucide-react';
 import { compressImage } from '../utils/compression';
 
