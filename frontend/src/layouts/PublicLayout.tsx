@@ -70,8 +70,8 @@ export default function PublicLayout() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      {/* Top Banner / Info bar */}
-      <div className="w-full overflow-hidden bg-black text-white text-xs py-2.5 border-b border-white/10 whitespace-nowrap flex items-center">
+      {/* Top Banner / Info bar (Hidden on mobile to avoid notch/status-bar overlap, active on desktop & tablet) */}
+      <div className="hidden md:flex w-full overflow-hidden bg-black text-white text-xs py-2.5 border-b border-white/10 whitespace-nowrap items-center">
         <div className="inline-block animate-ticker">
           <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
             <Phone className="w-3.5 h-3.5 text-white" /> {getFormattedPhoneNumber()}
