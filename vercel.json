@@ -19,7 +19,37 @@
       "dest": "backend/src/server.ts"
     },
     {
-      "handle": "filesystem"
+      "src": "/sw.js",
+      "dest": "frontend/sw.js",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate"
+      }
+    },
+    {
+      "src": "/manifest.webmanifest",
+      "dest": "frontend/manifest.webmanifest",
+      "headers": {
+        "content-type": "application/manifest+json"
+      }
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "frontend/manifest.json",
+      "headers": {
+        "content-type": "application/manifest+json"
+      }
+    },
+    {
+      "src": "/icons/(.*)",
+      "dest": "frontend/icons/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "frontend/assets/$1"
+    },
+    {
+      "src": "/(.*\\.(?:ico|png|jpg|jpeg|svg|webp|json|webmanifest|js|css))",
+      "dest": "frontend/$1"
     },
     {
       "src": "/(.*)",
