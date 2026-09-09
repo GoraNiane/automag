@@ -70,34 +70,34 @@ export default function PublicLayout() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      {/* Top Banner / Info bar (Hidden on mobile to avoid notch/status-bar overlap, active on desktop & tablet) */}
-      <div className="hidden md:flex w-full overflow-hidden bg-black text-white text-xs py-2.5 border-b border-white/10 whitespace-nowrap items-center">
-        <div className="inline-block animate-ticker">
-          <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
+      {/* Top Banner / Info bar (Visible on all devices with safe-area support for iOS notch) */}
+      <div className="w-full overflow-hidden bg-black text-white text-[11px] sm:text-xs pt-[env(safe-area-inset-top,0px)] pb-2 sm:py-2.5 border-b border-white/10 whitespace-nowrap flex items-center select-none z-50">
+        <div className="inline-flex shrink-0 animate-ticker items-center">
+          <span className="inline-flex items-center gap-1.5 text-white/80 mx-4 sm:mx-8">
             <Phone className="w-3.5 h-3.5 text-white" /> {getFormattedPhoneNumber()}
           </span>
-          <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
+          <span className="inline-flex items-center gap-1.5 text-white/80 mx-4 sm:mx-8">
             <MapPin className="w-3.5 h-3.5 text-white" /> VDN, Dakar, Sénégal
           </span>
-          <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
+          <span className="inline-flex items-center gap-1.5 text-white/80 mx-4 sm:mx-8">
             Horaires : Lun - Sam / 8h00 - 19h00
           </span>
-          <span className="text-white font-extrabold mx-8">
+          <span className="text-white font-extrabold mx-4 sm:mx-8 tracking-wide">
             NBKF AutoElite — Qualité. Fiabilité. Confiance.
           </span>
         </div>
-        <div className="inline-block animate-ticker">
-          <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
+        <div className="inline-flex shrink-0 animate-ticker items-center" aria-hidden="true">
+          <span className="inline-flex items-center gap-1.5 text-white/80 mx-4 sm:mx-8">
             <Phone className="w-3.5 h-3.5 text-white" /> {getFormattedPhoneNumber()}
           </span>
-          <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
-            <MapPin className="w-3.5 h-3.5 text-white" /> Hann Mariste 1,ecole japonaise
+          <span className="inline-flex items-center gap-1.5 text-white/80 mx-4 sm:mx-8">
+            <MapPin className="w-3.5 h-3.5 text-white" /> VDN, Dakar, Sénégal
           </span>
-          <span className="inline-flex items-center gap-1.5 text-white/70 mx-8">
+          <span className="inline-flex items-center gap-1.5 text-white/80 mx-4 sm:mx-8">
             Horaires : Lun - Sam / 8h00 - 19h00
           </span>
-          <span className="text-white font-extrabold mx-8">
-            AutoElite — Qualité. Fiabilité. Confiance.
+          <span className="text-white font-extrabold mx-4 sm:mx-8 tracking-wide">
+            NBKF AutoElite — Qualité. Fiabilité. Confiance.
           </span>
         </div>
       </div>
