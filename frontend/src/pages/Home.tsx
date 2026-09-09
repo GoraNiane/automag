@@ -47,68 +47,77 @@ export default function Home() {
   };
 
   return (
-    <div className="space-y-20 pb-20">
+    <div className="space-y-12 md:space-y-20 pb-20 w-full overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-12 md:pt-28 md:pb-16 lg:pt-36 lg:pb-52 overflow-visible">
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <img 
-            src={heroBanner} 
-            alt="Véhicules d'occasion Auto-Mag" 
-            className="w-full h-full object-cover object-center" 
-          />
-        </div>
+      <section className="relative w-full bg-slate-950 overflow-hidden">
+        {/* Background Image Container with Full Photo Framing */}
+        <div className="relative min-h-[420px] sm:min-h-[480px] md:min-h-[540px] lg:min-h-[620px] xl:min-h-[680px] w-full flex flex-col justify-between pt-10 pb-16 sm:pt-16 sm:pb-20 lg:pt-24 lg:pb-36">
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img 
+              src={heroBanner} 
+              alt="Véhicules d'occasion AutoElite Sénégal" 
+              className="w-full h-full object-cover object-[center_60%] sm:object-center select-none" 
+              fetchPriority="high"
+            />
+            {/* Cinematic Gradient Overlays to preserve both text readability and car visibility */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/40 to-black/90 lg:from-black/75 lg:via-black/30 lg:to-black/85" />
+          </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white">
-          <div className="max-w-2xl space-y-6">
-            <motion.span 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="px-3.5 py-1.5 bg-accent-700/80 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-widest text-white inline-block border border-accent-600/30"
-            >
-              Concessionnaire Automobile Premium
-            </motion.span>
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-6xl font-display font-extrabold tracking-tight leading-[1.1]"
-            >
-              Découvrez nos véhicules <span className="text-white font-light italic">d'occasion</span>
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-base text-slate-300 leading-relaxed max-w-lg"
-            >
-              Trouvez votre véhicule idéal disponible immédiatement, sous douane ou importé sur commande selon vos exigences.
-            </motion.p>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-wrap gap-4 pt-2"
-            >
-              <Link to="/voitures" className="btn-primary px-8">
-                Parcourir le catalogue <ChevronRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
+          {/* Hero Content */}
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white">
+            <div className="max-w-2xl space-y-4 sm:space-y-6">
+              <motion.span 
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="px-3 py-1 sm:px-3.5 sm:py-1.5 bg-white/10 backdrop-blur-md rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white inline-flex items-center gap-1.5 border border-white/20 shadow-sm"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Concessionnaire Automobile Premium
+              </motion.span>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-[1.15]"
+              >
+                Découvrez nos véhicules <span className="text-white font-light italic">d'occasion</span>
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-xs sm:text-sm md:text-base text-slate-200 leading-relaxed max-w-lg font-light"
+              >
+                Trouvez votre véhicule idéal disponible immédiatement, sous douane ou importé sur commande selon vos exigences.
+              </motion.p>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="flex flex-wrap gap-3 pt-1"
+              >
+                <Link to="/voitures" className="btn-primary px-6 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-bold shadow-xl shadow-black/40">
+                  <span>Parcourir le catalogue</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </motion.div>
+            </div>
           </div>
         </div>
 
-        {/* Quick Search Panel */}
-        <div className="relative mt-8 lg:mt-0 lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:transform lg:translate-y-1/2 z-20 max-w-5xl mx-auto px-4">
+        {/* Quick Search Panel (Desktop: Absolute overlap, Mobile: Integrated Clean Card) */}
+        <div className="relative -mt-8 sm:-mt-10 lg:mt-0 lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:transform lg:translate-y-1/2 z-20 max-w-5xl mx-auto px-4">
           <form 
             onSubmit={handleSearch}
-            className="bg-white border border-slate-100 p-6 md:p-8 rounded-2xl shadow-xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end"
+            className="bg-white border border-slate-200/80 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-[0_15px_40px_rgba(0,0,0,0.12)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 items-end"
           >
             <div>
-              <label className="form-label">Marque</label>
+              <label className="form-label text-[11px] font-bold text-slate-700">Marque</label>
               <select 
                 value={brand}
                 onChange={(e) => { setBrand(e.target.value); setModel(''); }}
-                className="form-input"
+                className="form-input bg-slate-50 border-slate-200 focus:bg-white text-xs sm:text-sm"
               >
                 <option value="">Toutes les marques</option>
                 {uniqueBrands.map(b => (
@@ -118,49 +127,49 @@ export default function Home() {
             </div>
             
             <div>
-              <label className="form-label">Modèle</label>
+              <label className="form-label text-[11px] font-bold text-slate-700">Modèle</label>
               <input 
                 type="text" 
-                placeholder="Ex: Classe C" 
+                placeholder="Ex: Classe C, Tucson..." 
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                className="form-input"
+                className="form-input bg-slate-50 border-slate-200 focus:bg-white text-xs sm:text-sm"
               />
             </div>
             
             <div>
-              <label className="form-label">Budget Max (FCFA)</label>
+              <label className="form-label text-[11px] font-bold text-slate-700">Budget Max (FCFA)</label>
               <input 
                 type="number" 
-                placeholder="Ex: 20000000" 
+                placeholder="Ex: 20 000 000" 
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="form-input"
+                className="form-input bg-slate-50 border-slate-200 focus:bg-white text-xs sm:text-sm"
               />
             </div>
 
             <div>
-              <label className="form-label">Année Min</label>
+              <label className="form-label text-[11px] font-bold text-slate-700">Année Min</label>
               <input 
                 type="number" 
                 placeholder="Ex: 2020" 
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
-                className="form-input"
+                className="form-input bg-slate-50 border-slate-200 focus:bg-white text-xs sm:text-sm"
               />
             </div>
 
             <div>
-              <button type="submit" className="w-full btn-primary h-[42px] py-0">
-                <Search className="w-4 h-4" /> Rechercher
+              <button type="submit" className="w-full btn-primary h-[42px] py-0 text-xs sm:text-sm font-bold shadow-md">
+                <Search className="w-4 h-4" /> <span>Rechercher</span>
               </button>
             </div>
           </form>
         </div>
       </section>
 
-      {/* Spacer */}
-      <div className="h-12 md:h-16 lg:h-16" />
+      {/* Spacer for desktop floating search bar */}
+      <div className="hidden lg:block h-14 xl:h-20" />
 
       {/* Scroll animation variants */}
       {(() => {
